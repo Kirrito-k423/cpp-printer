@@ -80,9 +80,11 @@ private:
         char** symbols = backtrace_symbols(buffer, nptrs);
 
         auto stackLog = getOfStream(getThreadFileName(functionName_, "funStack.log"));
+        statLog << "Time: " << getHumanReadableTime(startTime_) << ", Call " << callCount_  << std::endl;
         for (int i = 0; i < nptrs; i++) {
             stackLog << symbols[i] << std::endl;
         }
+        stackLog << std::endl;
         free(symbols);
     }
 
