@@ -75,17 +75,28 @@ private:
 
 private:
     void logCallStack() {
-        void* buffer[256];
-        int nptrs = backtrace(buffer, 256);
-        char** symbols = backtrace_symbols(buffer, nptrs);
-
+       // 获取线程相关的文件流，用于写入调用栈
         auto stackLog = getOfStream(getThreadFileName(functionName_, "funStack.log"));
-        stackLog << "Time: " << getHumanReadableTime(startTime_) << ", Call " << callCount_  << std::endl;
-        for (int i = 0; i < nptrs; i++) {
-            stackLog << symbols[i] << std::endl;
-        }
-        stackLog << std::endl;
-        free(symbols);
+        
+        // 打印时间和调用次数
+        stackLog << "Time: " << getHumanReadableTime(startTime_) << ", Call " << callCount_ << std::endl;
+
+        // 使用 backward::StackTrace 获取调用栈
+        backward::StackTrace st;
+        st.load_here(16);  // 可以根据需要调整栈帧的数量
+
+        // 配置 Printer 打印调用栈
+        backward::Printer p;
+        p.object = true;         // 显示对象信息
+        p.color_mode = backward::ColorMode::always;  // 始终使用颜色
+        p.address = true;        // 打印地址信息
+
+        // 将调用栈信息输出到文件
+        std::ostringstream oss;
+        p.print(st, oss);  // 打印到字符串流
+
+        // 将打印结果写入日志文件
+        stackLog << oss.str() << std::endl;
     }
 
     std::ofstream getOfStream(std::string filePath){
