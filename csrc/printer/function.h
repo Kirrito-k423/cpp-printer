@@ -38,6 +38,7 @@
 #include <iomanip>  // std::put_time
 #include <ctime>    // std::localtime
 #include <sys/syscall.h>
+#include <filesystem>
 
 class FunctionProfiler {
 public:
@@ -78,11 +79,20 @@ private:
         int nptrs = backtrace(buffer, 256);
         char** symbols = backtrace_symbols(buffer, nptrs);
 
-        std::ofstream stackLog(getThreadFileName(functionName_, "funStack.log"), std::ios_base::app);
+        auto stackLog = getOfStream(getThreadFileName(functionName_, "funStack.log"));
         for (int i = 0; i < nptrs; i++) {
             stackLog << symbols[i] << std::endl;
         }
         free(symbols);
+    }
+
+    std::ofstream getOfStream(std::string filePath){
+        std::filesystem::create_directories(filePath.substr(0, filePath.find_last_of('/')));  // 创建目录
+        std::ofstream fileLog(filePath, std::ios_base::app);
+        if(!fileLog.is_open()) {
+            std::cerr << "Error: Unable to open file!" << std::endl;
+        } 
+        return fileLog;
     }
 
     std::string getHumanReadableTime(const std::chrono::high_resolution_clock::time_point& timePoint) {
@@ -103,7 +113,7 @@ private:
     }
 
     void logStats(long duration) {
-        std::ofstream statLog(getThreadFileName(functionName_, "stat.txt"), std::ios_base::app);
+        auto statLog = getThreadFileName(functionName_, "stat.txt");
         statLog << "Time: " << getHumanReadableTime(startTime_) << ", Call " << callCount_ << ": Duration " << duration << " microseconds." << std::endl;
     }
 
