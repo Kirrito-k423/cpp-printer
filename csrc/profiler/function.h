@@ -35,6 +35,8 @@
 #include <mutex>
 #include <unistd.h>
 #include <execinfo.h>
+#include <iomanip>  // std::put_time
+#include <ctime>    // std::localtime
 
 class FunctionProfiler {
 public:
