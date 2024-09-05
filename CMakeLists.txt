@@ -19,6 +19,11 @@ set(CPP_SRCS ${PRINT_SRCS} ${PROJECT_SOURCE_ROOT}/main.cpp)
 
 ADD_EXECUTABLE(${exe} ${CPP_SRCS})
 
+# 检查是否需要链接 stdc++fs（GCC 8.x 需要）
+if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 9.0)
+    target_link_libraries(${exe} stdc++fs)
+endif()
+
 # add_library
 
 target_link_libraries(${exe} PUBLIC -ldw)
