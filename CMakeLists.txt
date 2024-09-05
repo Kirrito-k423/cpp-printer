@@ -1,3 +1,7 @@
+cmake_minimum_required(VERSION 3.0.0)
+
+PROJECT(cpp_printer)
+
 set(PROJECT_SOURCE_ROOT "csrc")
 
 INCLUDE_DIRECTORIES(${PROJECT_SOURCE_ROOT})
