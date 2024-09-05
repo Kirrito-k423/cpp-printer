@@ -83,7 +83,7 @@ private:
 
         // 使用 backward::StackTrace 获取调用栈
         backward::StackTrace st;
-        st.load_here(16);  // 可以根据需要调整栈帧的数量
+        st.load_here(50);  // 可以根据需要调整栈帧的数量
 
         // 配置 Printer 打印调用栈
         backward::Printer p;
