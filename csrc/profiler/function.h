@@ -39,9 +39,9 @@
 class FunctionProfiler {
 public:
     FunctionProfiler(const std::string& funcName)
-        : functionName(funcName), startTime(std::chrono::high_resolution_clock::now()) {
+        : functionName_(funcName), startTime_(std::chrono::high_resolution_clock::now()) {
         // 统计调用次数
-        callCount++;
+        callCount_++;
         // 记录调用栈
         logCallStack();
     }
@@ -49,35 +49,50 @@ public:
     ~FunctionProfiler() {
         // 统计执行时间
         auto endTime = std::chrono::high_resolution_clock::now();
-        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime).count();
+        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime_).count();
         // 输出统计信息
         logStats(duration);
     }
 
+private:
+    std::string functionName_;
+    std::chrono::high_resolution_clock::time_point startTime_;
+    // 线程独立的计数器
+    static inline thread_local int callCount_ = 0;
+    // tid 写不同线程，不需要锁
+    // static inline thread_local std::mutex logMutex;
+
+private:
     static void logCallStack() {
         void* buffer[256];
         int nptrs = backtrace(buffer, 256);
         char** symbols = backtrace_symbols(buffer, nptrs);
 
-        std::ofstream stackLog(getThreadFileName(functionName, "funStack.log"), std::ios_base::app);
+        std::ofstream stackLog(getThreadFileName(functionName_, "funStack.log"), std::ios_base::app);
         for (int i = 0; i < nptrs; i++) {
             stackLog << symbols[i] << std::endl;
         }
         free(symbols);
     }
 
-    static void logStats(long duration) {
-        std::ofstream statLog(getThreadFileName(functionName, "stat.txt"), std::ios_base::app);
-        statLog << "Call " << callCount << ": Duration " << duration << " microseconds." << std::endl;
+    std::string getHumanReadableTime(const std::chrono::high_resolution_clock::time_point& timePoint) {
+        // 将 high_resolution_clock::time_point 转换为 system_clock::time_point
+        auto systemTime = std::chrono::system_clock::now() + (timePoint - std::chrono::high_resolution_clock::now());
+
+        // 将 system_clock::time_point 转换为 time_t
+        std::time_t timeT = std::chrono::system_clock::to_time_t(systemTime);
+
+        // 将 time_t 转换为本地时间
+        std::tm* localTime = std::localtime(&timeT);
+
+        // 打印格式化的时间
+        return "Human-readable time: " + std::put_time(localTime, "%Y-%m-%d %H:%M:%S");
     }
 
-private:
-    std::string functionName;
-    std::chrono::high_resolution_clock::time_point startTime;
-    // 线程独立的计数器
-    static inline thread_local int callCount = 0;
-    // tid 写不同线程，不需要锁
-    // static inline thread_local std::mutex logMutex;
+    static void logStats(long duration) {
+        std::ofstream statLog(getThreadFileName(functionName_, "stat.txt"), std::ios_base::app);
+        statLog << getHumanReadableTime(startTime_) << ", Call " << callCount_ << ": Duration " << duration << " microseconds." << std::endl;
+    }
 
     static std::string getThreadFileName(const std::string& funcName, const std::string& suffix) {
         pid_t pid = getpid();
