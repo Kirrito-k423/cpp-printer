@@ -56,6 +56,13 @@ public:
         logStats(duration);
     }
 
+    // static 静态函数不依赖于类的实例(也不能使用)，它可以在没有对象的情况下直接通过类名调用。 FunctionProfiler::getThreadFileName("myFunc", "log.txt");
+    static std::string getThreadFileName(const std::string& funcName, const std::string& suffix) {
+        pid_t pid = getpid();
+        std::thread::id tid = std::this_thread::get_id();
+        return "/tmp/cpp_" + std::to_string(pid) + "/" + std::to_string(tid) + "/" + funcName + "_" + suffix;
+    }
+
 private:
     std::string functionName_;
     std::chrono::high_resolution_clock::time_point startTime_;
@@ -65,7 +72,7 @@ private:
     // static inline thread_local std::mutex logMutex;
 
 private:
-    static void logCallStack() {
+    void logCallStack() {
         void* buffer[256];
         int nptrs = backtrace(buffer, 256);
         char** symbols = backtrace_symbols(buffer, nptrs);
@@ -87,20 +94,18 @@ private:
         // 将 time_t 转换为本地时间
         std::tm* localTime = std::localtime(&timeT);
 
-        // 打印格式化的时间
-        return "Human-readable time: " + std::put_time(localTime, "%Y-%m-%d %H:%M:%S");
+        // 使用 std::ostringstream 拼接字符串
+        std::ostringstream oss;
+        oss << std::put_time(localTime, "%Y-%m-%d %H:%M:%S");
+        
+        return oss.str();  // 返回拼接后的字符串
     }
 
-    static void logStats(long duration) {
+    void logStats(long duration) {
         std::ofstream statLog(getThreadFileName(functionName_, "stat.txt"), std::ios_base::app);
-        statLog << getHumanReadableTime(startTime_) << ", Call " << callCount_ << ": Duration " << duration << " microseconds." << std::endl;
+        statLog << "Time: " << getHumanReadableTime(startTime_) << ", Call " << callCount_ << ": Duration " << duration << " microseconds." << std::endl;
     }
 
-    static std::string getThreadFileName(const std::string& funcName, const std::string& suffix) {
-        pid_t pid = getpid();
-        std::thread::id tid = std::this_thread::get_id();
-        return "/tmp/cpp_" + std::to_string(pid) + "/" + std::to_string(tid) + "/" + funcName + "_" + suffix;
-    }
 };
 
 // 用 RAII 包装函数调用
