@@ -113,7 +113,7 @@ private:
     }
 
     void logStats(long duration) {
-        auto statLog = getThreadFileName(functionName_, "stat.txt");
+        auto statLog = getOfStream(getThreadFileName(functionName_, "stat.txt"));
         statLog << "Time: " << getHumanReadableTime(startTime_) << ", Call " << callCount_ << ": Duration " << duration << " microseconds." << std::endl;
     }
 

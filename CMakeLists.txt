@@ -2,10 +2,14 @@ cmake_minimum_required(VERSION 3.0.0)
 
 PROJECT(cpp_printer)
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
 set(PROJECT_SOURCE_ROOT "csrc")
 
 INCLUDE_DIRECTORIES(${PROJECT_SOURCE_ROOT})
-set(exe "./bin/exe")
+set(exe "main")
 
 set(PRINT_SRCS)
 
