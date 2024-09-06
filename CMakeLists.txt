@@ -35,7 +35,7 @@ FetchContent_Declare(
   GIT_TAG        v0.7.0 # <HASH or TAG>
 )
 FetchContent_MakeAvailable(cpptrace)
-target_link_libraries(your_target cpptrace::cpptrace)
+target_link_libraries(${exe} cpptrace::cpptrace)
 
 # add_library for backward-cpp
 target_link_libraries(${exe} PUBLIC -ldw)
