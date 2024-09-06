@@ -38,7 +38,8 @@
 #include <iomanip>  // std::put_time
 #include <ctime>    // std::localtime
 #include <sys/syscall.h>
-#include <filesystem>
+#include <cstdlib>   // for system()
+
 
 class FunctionProfiler {
 public:
@@ -99,8 +100,20 @@ private:
         stackLog << oss.str() << std::endl;
     }
 
+    void createDirectories(const std::string& path) {
+        // 调用系统命令 mkdir -p
+        std::string command = "mkdir -p " + path;
+        int result = system(command.c_str());
+
+        if (result == 0) {
+            std::cout << "Directory created successfully." << std::endl;
+        } else {
+            std::cerr << "Failed to create directory." << std::endl;
+        }
+    }
+
     std::ofstream getOfStream(std::string filePath){
-        std::filesystem::create_directories(filePath.substr(0, filePath.find_last_of('/')));  // 创建目录
+        createDirectories(filePath.substr(0, filePath.find_last_of('/')));  // 创建目录
         std::ofstream fileLog(filePath, std::ios_base::app);
         if(!fileLog.is_open()) {
             std::cerr << "Error: Unable to open file!" << std::endl;

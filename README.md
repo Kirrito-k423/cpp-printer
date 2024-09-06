@@ -13,3 +13,8 @@
   * But these project ([icecream-cpp](https://github.com/renatoGarcia/icecream-cpp)) is under development, you maybe need to update related header for new features and fix bugs.
 * [ ] Support Multi-Process/Thread Printer to `/tmp/{pid}/{tid}/{fun_name}.log`
 * [ ] Support google test
+
+## Limits
+
+* Only on Linux
+  * Using `mkdir -p`
