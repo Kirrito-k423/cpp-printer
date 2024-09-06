@@ -91,9 +91,12 @@ private:
         stackLog << "Time: " << getHumanReadableTime(startTime_) << ", Call " << callCount_ << std::endl;
 
         // 生成堆栈追踪
-        cpptrace::trace trace = cpptrace::generate_trace();
-        cpptrace::trace_printer printer(stackLog);  // 使用现有的文件流
-        printer.print(trace);  // 将堆栈追踪追加到文件中
+        cpptrace::stacktrace trace = cpptrace::generate_trace();
+        
+        std::osreingstream oss;
+        trace.print(oss);  
+
+        stackLog << oss.str() << std::endl;
     }
 
     void createDirectories(const std::string& path) {
