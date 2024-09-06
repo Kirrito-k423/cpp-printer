@@ -58,7 +58,7 @@
     std::string thread_id_str = std::to_string(tid); \
     std::string prefix = std::string(YELLOW) + "info " + std::to_string(getpid()) + "/" + thread_id_str + " | " + std::string(RESET); \
     IC_CONFIG.prefix(prefix.c_str()); \
-    IC(__VA_ARGS__); \ 
+    IC(__VA_ARGS__); \
 }
 
 

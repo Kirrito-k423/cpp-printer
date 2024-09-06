@@ -4,6 +4,12 @@ PROJECT(cpp_printer)
 
 SET( CMAKE_VERBOSE_MAKEFILE on )
 
+
+# for inline
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+
+
 # flags
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -O3")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O3")
