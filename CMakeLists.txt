@@ -2,6 +2,12 @@ cmake_minimum_required(VERSION 3.0.0)
 
 PROJECT(cpp_printer)
 
+SET( CMAKE_VERBOSE_MAKEFILE on )
+
+# flags
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -O3")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O3")
+
 # for filesystem
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
