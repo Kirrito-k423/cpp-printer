@@ -62,9 +62,17 @@ public:
     // static 静态函数不依赖于类的实例(也不能使用)，它可以在没有对象的情况下直接通过类名调用。 FunctionProfiler::getThreadFileName("myFunc", "log.txt");
     static std::string getThreadFileName(const std::string& funcName, const std::string& suffix) {
         pid_t pid = getpid();
-        pid_t tid = syscall(SYS_gettid); /* 获取系统级 TID */ \
+        pid_t tid = syscall(SYS_gettid); /* 获取系统级 TID */ 
         return "/tmp/cpp_" + std::to_string(pid) + "/" + std::to_string(tid) + "/" + funcName + "_" + suffix;
     }
+
+    std::string getResultPath(){
+        pid_t pid = getpid();
+        pid_t tid = syscall(SYS_gettid); /* 获取系统级 TID */ 
+        return "/tmp/cpp_" + std::to_string(pid) + "/" + std::to_string(tid) + "/" + functionName_ + "_funStack.log";
+    }
+
+
 
 private:
     std::string functionName_;
