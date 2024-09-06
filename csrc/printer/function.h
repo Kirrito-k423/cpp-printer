@@ -25,7 +25,7 @@
 // #### 示例代码框架：
 
 // ```cpp
-#include "backward.hpp"
+#include <cpptrace/cpptrace.hpp>
 
 #include <chrono>
 #include <fstream>
@@ -90,22 +90,10 @@ private:
         // 打印时间和调用次数
         stackLog << "Time: " << getHumanReadableTime(startTime_) << ", Call " << callCount_ << std::endl;
 
-        // 使用 backward::StackTrace 获取调用栈
-        backward::StackTrace st;
-        st.load_here(50);  // 可以根据需要调整栈帧的数量
-
-        // 配置 Printer 打印调用栈
-        backward::Printer p;
-        p.object = true;         // 显示对象信息
-        p.color_mode = backward::ColorMode::always;  // 始终使用颜色
-        p.address = true;        // 打印地址信息
-
-        // 将调用栈信息输出到文件
-        std::ostringstream oss;
-        p.print(st, oss);  // 打印到字符串流
-
-        // 将打印结果写入日志文件
-        stackLog << oss.str() << std::endl;
+        // 生成堆栈追踪
+        cpptrace::trace trace = cpptrace::generate_trace();
+        cpptrace::trace_printer printer(stackLog);  // 使用现有的文件流
+        printer.print(trace);  // 将堆栈追踪追加到文件中
     }
 
     void createDirectories(const std::string& path) {

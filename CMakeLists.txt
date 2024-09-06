@@ -28,5 +28,14 @@ set(CPP_SRCS ${PRINT_SRCS} ${PROJECT_SOURCE_ROOT}/main.cpp)
 
 ADD_EXECUTABLE(${exe} ${CPP_SRCS})
 
+include(FetchContent)
+FetchContent_Declare(
+  cpptrace
+  GIT_REPOSITORY https://github.com/jeremy-rifkin/cpptrace.git
+  GIT_TAG        v0.7.0 # <HASH or TAG>
+)
+FetchContent_MakeAvailable(cpptrace)
+target_link_libraries(your_target cpptrace::cpptrace)
+
 # add_library for backward-cpp
 target_link_libraries(${exe} PUBLIC -ldw)
