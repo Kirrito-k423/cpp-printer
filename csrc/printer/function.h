@@ -93,7 +93,7 @@ private:
         // 生成堆栈追踪
         cpptrace::stacktrace trace = cpptrace::generate_trace();
         
-        std::osreingstream oss;
+        std::ostringstream oss;
         trace.print(oss);  
 
         stackLog << oss.str() << std::endl;
