@@ -1,7 +1,3 @@
-Here’s a polished version of the README:
-
----
-
 # cpp-printer
 
 A lightweight utility for monitoring function behavior, including call stacks, timing, frequency, and call counts.
