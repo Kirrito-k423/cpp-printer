@@ -94,7 +94,7 @@ private:
         cpptrace::stacktrace trace = cpptrace::generate_trace();
         
         std::ostringstream oss;
-        trace.print(oss);  
+        trace.print_with_snippets(oss);  
 
         stackLog << oss.str() << std::endl;
     }
