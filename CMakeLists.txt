@@ -36,6 +36,3 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(cpptrace)
 target_link_libraries(${exe} PUBLIC cpptrace::cpptrace)
-
-# add_library for backward-cpp
-target_link_libraries(${exe} PUBLIC -ldw)

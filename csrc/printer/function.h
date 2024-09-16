@@ -39,6 +39,7 @@
 #include <ctime>    // std::localtime
 #include <sys/syscall.h>
 #include <cstdlib>   // for system()
+#include <sstream> // for ostringstream
 
 
 class FunctionProfiler {
@@ -125,7 +126,8 @@ private:
         auto systemTime = std::chrono::system_clock::now() + (timePoint - std::chrono::high_resolution_clock::now());
 
         // 将 system_clock::time_point 转换为 time_t
-        std::time_t timeT = std::chrono::system_clock::to_time_t(systemTime);
+        auto systemTimeInMicroseconds = std::chrono::time_point_cast<std::chrono::microseconds>(systemTime);
+        std::time_t timeT = std::chrono::system_clock::to_time_t(systemTimeInMicroseconds);
 
         // 将 time_t 转换为本地时间
         std::tm* localTime = std::localtime(&timeT);
