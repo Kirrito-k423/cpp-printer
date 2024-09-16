@@ -40,7 +40,6 @@ public:
 
     // static 静态函数不依赖于类的实例(也不能使用)，它可以在没有对象的情况下直接通过类名调用。 FunctionProfiler::getThreadFileName("myFunc", "log.txt");
     static std::string getThreadFileName(const std::string& funcName, const std::string& suffix);
-    std::string getResultPath();
 
 private:
     std::string functionName_;
@@ -49,6 +48,7 @@ private:
     static inline thread_local int callCount_ = 0;
 
 private:
+    std::string getResultPath();
     void logCallStack();
     void logStats();
 
