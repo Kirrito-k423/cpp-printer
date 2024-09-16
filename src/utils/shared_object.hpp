@@ -19,7 +19,7 @@ std::string getSharedObjectBaseAddress(const std::string& so_name) {
     // 检查so_name是否以".so"结尾
     if (so_name.size() < 3 || so_name.substr(so_name.size() - 3) != ".so") {
         // 如果不是以.so结尾，则直接返回输入地址
-        return "";
+        return "0";
     }
     
     // 提取不带路径的 .so 文件名
@@ -76,12 +76,12 @@ std::string addr2line(const std::string& so_path, void* addr) {
 
 // 从 backtrace_symbols 中提取 .so 路径和地址
 std::pair<std::string, void*> extractSharedObjectAndAddress(const std::string& symbol) {
-    std::regex re(R"((.*)\((.*)\+0x([0-9a-fA-F]+)\) \[(0x[0-9a-fA-F]+)\])");
+    std::regex re(R"((.*)\((.*)(\+0x([0-9a-fA-F]+))?\) \[(0x[0-9a-fA-F]+)\])");
     std::smatch match;
 
     if (std::regex_search(symbol, match, re)) {
         std::string so_path = match[1];        // .so 文件路径
-        void* address = reinterpret_cast<void*>(std::stoul(match[4], nullptr, 16));  // 绝对地址
+        void* address = reinterpret_cast<void*>(std::stoul(match[5], nullptr, 16));  // 绝对地址
         return {so_path, address};
     }
 
