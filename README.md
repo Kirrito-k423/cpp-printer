@@ -4,13 +4,29 @@ A lightweight utility for monitoring function behavior, including call stacks, t
 
 ## Quick Usage
 
-* **Installation**: Copy the `csrc/printer` directory to your project and include it in your build process.
-* **API Usage**: Simply insert `PROFILE_FUNCTION()` at the start of the function you wish to monitor. This will automatically log the function’s call stack, invocation count, and frequency.
+### Installation
+
+CMake FetchContent Usage:
+
+```m
+include(FetchContent)
+FetchContent_Declare(
+  cpp_printer
+  GIT_REPOSITORY https://github.com/Kirrito-k423/cpp-printer.git
+  GIT_TAG        v1.1.0
+)
+FetchContent_MakeAvailable(cpprinter)
+
+target_link_libraries(your_project PRIVATE cpprinter)
+```
+
+### API Usage
+ 
+Simply insert `PROFILE_FUNCTION()` at the start of the function you wish to monitor. This will automatically log the function’s call stack, invocation count, and frequency.
 
 ```cpp
 void exampleFunction() {
     PROFILE_FUNCTION(); // Automatically records function info
-    tIC(profiler.getResultPath()); // Outputs the log file path, e.g., /tmp/{pid}/{tid}/{fun_name}.log
 }
 ```
 
