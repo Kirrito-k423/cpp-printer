@@ -1,4 +1,5 @@
 #include "cpprinter.hpp"
+#include <thread>
 
 void testFunctionProfiler() {
     PROFILE_FUNCTION();

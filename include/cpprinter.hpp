@@ -25,139 +25,36 @@
 // #### 示例代码框架：
 
 // ```cpp
+
 #include <cpptrace/cpptrace.hpp>
-
 #include <chrono>
-#include <fstream>
-#include <iostream>
 #include <string>
-#include <thread>
-#include <mutex>
-#include <unistd.h>
-#include <execinfo.h>
-#include <iomanip>  // std::put_time
-#include <ctime>    // std::localtime
-#include <sys/syscall.h>
-#include <cstdlib>   // for system()
-#include <sstream> // for ostringstream
 
+
+namespace cpprinter{
 
 class FunctionProfiler {
 public:
-    FunctionProfiler(const std::string& funcName)
-        : functionName_(funcName), startTime_(std::chrono::high_resolution_clock::now()) {
-        // 统计调用次数
-        callCount_++;
-        // 记录调用栈
-        logCallStack();
-    }
-
-    ~FunctionProfiler() {
-        // 统计执行时间
-        auto endTime = std::chrono::high_resolution_clock::now();
-        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime_).count();
-        // 输出统计信息
-        logStats(duration);
-    }
+    FunctionProfiler(const std::string& funcName);
+    ~FunctionProfiler();
 
     // static 静态函数不依赖于类的实例(也不能使用)，它可以在没有对象的情况下直接通过类名调用。 FunctionProfiler::getThreadFileName("myFunc", "log.txt");
-    static std::string getThreadFileName(const std::string& funcName, const std::string& suffix) {
-        pid_t pid = getpid();
-        pid_t tid = syscall(SYS_gettid); /* 获取系统级 TID */ 
-        return "/tmp/cpp_" + std::to_string(pid) + "/" + std::to_string(tid) + "/" + funcName + "_" + suffix;
-    }
-
-    std::string getResultPath(){
-        pid_t pid = getpid();
-        pid_t tid = syscall(SYS_gettid); /* 获取系统级 TID */ 
-        return "/tmp/cpp_" + std::to_string(pid) + "/" + std::to_string(tid) + "/" + functionName_ + "_funStack.log";
-    }
-
-
+    static std::string getThreadFileName(const std::string& funcName, const std::string& suffix);
+    std::string getResultPath();
 
 private:
     std::string functionName_;
     std::chrono::high_resolution_clock::time_point startTime_;
     // 线程独立的计数器
     static inline thread_local int callCount_ = 0;
-    // tid 写不同线程，不需要锁
-    // static inline thread_local std::mutex logMutex;
 
 private:
-    void logCallStack() {
-       // 获取线程相关的文件流，用于写入调用栈
-        auto stackLog = getOfStream(getThreadFileName(functionName_, "funStack.log"));
-        
-        // 打印时间和调用次数
-        stackLog << "Time: " << getHumanReadableTime(startTime_) << ", Call " << callCount_ << std::endl;
-
-        // 生成堆栈追踪
-        cpptrace::stacktrace trace = cpptrace::generate_trace();
-        
-        std::ostringstream oss;
-        trace.print_with_snippets(oss);  
-
-        stackLog << oss.str() << std::endl;
-    }
-
-    void createDirectories(const std::string& path) {
-        // 调用系统命令 mkdir -p
-        std::string command = "mkdir -p " + path;
-        int result = system(command.c_str());
-
-        if (result == 0) {
-            std::cout << "Directory created successfully." << std::endl;
-        } else {
-            std::cerr << "Failed to create directory." << std::endl;
-        }
-    }
-
-    std::ofstream getOfStream(std::string filePath){
-        createDirectories(filePath.substr(0, filePath.find_last_of('/')));  // 创建目录
-        std::ofstream fileLog(filePath, std::ios_base::app);
-        if(!fileLog.is_open()) {
-            std::cerr << "Error: Unable to open file!" << std::endl;
-        } 
-        return fileLog;
-    }
-
-    std::string getHumanReadableTime(const std::chrono::high_resolution_clock::time_point& timePoint) {
-        // 将 high_resolution_clock::time_point 转换为 system_clock::time_point
-        auto systemTime = std::chrono::system_clock::now() + (timePoint - std::chrono::high_resolution_clock::now());
-
-        // 将 system_clock::time_point 转换为 time_t
-        auto systemTimeInMicroseconds = std::chrono::time_point_cast<std::chrono::microseconds>(systemTime);
-        std::time_t timeT = std::chrono::system_clock::to_time_t(systemTimeInMicroseconds);
-
-        // 将 time_t 转换为本地时间
-        std::tm* localTime = std::localtime(&timeT);
-
-        // 使用 std::ostringstream 拼接字符串
-        std::ostringstream oss;
-        oss << std::put_time(localTime, "%Y-%m-%d %H:%M:%S");
-        
-        return oss.str();  // 返回拼接后的字符串
-    }
-
-    void logStats(long duration) {
-        auto statLog = getOfStream(getThreadFileName(functionName_, "stat.txt"));
-        statLog << "Time: " << getHumanReadableTime(startTime_) << ", Call " << callCount_ << ": Duration " << duration << " microseconds." << std::endl;
-    }
+    void logCallStack();
+    void logStats();
 
 };
 
 // 用 RAII 包装函数调用
-#define PROFILE_FUNCTION() FunctionProfiler profiler(__FUNCTION__);
+#define PROFILE_FUNCTION() cpprinter::FunctionProfiler profiler(__FUNCTION__);
 
-// 示例函数
-// void exampleFunction() {
-//     PROFILE_FUNCTION();
-//     // 模拟工作
-//     std::this_thread::sleep_for(std::chrono::milliseconds(100));
-// }
-
-// int main() {
-//     exampleFunction();
-//     return 0;
-// }
-
+}//namespace cpprinter
