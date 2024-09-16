@@ -26,7 +26,6 @@
 
 // ```cpp
 
-#include <cpptrace/cpptrace.hpp>
 #include <chrono>
 #include <string>
 

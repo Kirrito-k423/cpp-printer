@@ -1,6 +1,8 @@
 #include "cpprinter.hpp"
 
 #include "utils/fstream_wrapper.hpp"
+#include "utils/shared_object.hpp"
+#include "utils/thread.hpp"
 #include "utils/time.hpp"
 
 #include <string>
@@ -23,26 +25,40 @@ FunctionProfiler::~FunctionProfiler() {
 
 std::string FunctionProfiler::getThreadFileName(const std::string& funcName, const std::string& suffix) {
     pid_t pid = getpid();
-    pid_t tid = syscall(SYS_gettid); /* 获取系统级 TID */ 
+    pid_t tid = get_thread_id();
     return "/tmp/cpp_" + std::to_string(pid) + "/" + std::to_string(tid) + "/" + funcName + "_" + suffix;
 }
 
 std::string FunctionProfiler::getResultPath(){
     pid_t pid = getpid();
-    pid_t tid = syscall(SYS_gettid); /* 获取系统级 TID */ 
+    pid_t tid = get_thread_id();
     return "/tmp/cpp_" + std::to_string(pid) + "/" + std::to_string(tid) + "/" + functionName_ + "_funStack.log";
 }
 
 void FunctionProfiler::logCallStack() {
-    auto stackLog = getOfStream(getThreadFileName(functionName_, "funStack.log"));
+    std::ofstream stackLog = getOfStream(getThreadFileName(functionName_, "funStack.log"));
     
     stackLog << "Time: " << getHumanReadableTime(startTime_) << ", Call " << callCount_ << std::endl;
 
-    cpptrace::stacktrace trace = cpptrace::generate_trace();
-    std::ostringstream oss;
-    trace.print_with_snippets(oss);  
+    // 获取调用栈
+    void* array[10];
+    size_t size = backtrace(array, 10);
+    char** symbols = backtrace_symbols(array, size);
 
-    stackLog << oss.str() << std::endl;
+    for (size_t i = 0; i < size; i++) {
+        stackLog << symbols[i] << std::endl;
+
+        // 提取 .so 文件路径和地址
+        auto [so_path, addr] = extractSharedObjectAndAddress(symbols[i]);
+
+        if (!so_path.empty() && addr) {
+            // 使用 addr2line 获取具体代码行号
+            stackLog << addr2line(so_path, addr) << std::endl;
+        } else {
+            stackLog << "Unable to extract .so path or address" << std::endl;
+        }
+    }
+
 }
 
 

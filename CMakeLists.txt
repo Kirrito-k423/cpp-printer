@@ -11,16 +11,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -O0")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0")
 
-# 导入 FetchContent 模块
-include(FetchContent)
-
-# 获取 cpptrace 依赖
-FetchContent_Declare(
-  cpptrace
-  GIT_REPOSITORY https://github.com/jeremy-rifkin/cpptrace.git
-  GIT_TAG        v0.7.1
-)
-FetchContent_MakeAvailable(cpptrace)
 
 # 添加 cpp-printer 库
 add_library(cpprinter
@@ -37,9 +27,6 @@ target_include_directories(cpprinter PUBLIC
 target_include_directories(cpprinter PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
-
-# 链接 cpptrace 库
-target_link_libraries(cpprinter PUBLIC cpptrace::cpptrace)
 
 # 测试代码
 enable_testing()
