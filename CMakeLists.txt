@@ -11,11 +11,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -O0")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0")
 
+# Recursively gather all .cpp files under src/
+file(GLOB_RECURSE CPPRINTER_SOURCES "src/*.cpp")
 
 # 添加 cpp-printer 库
-add_library(cpprinter
-    src/cpprinter.cpp
-)
+add_library(cpprinter ${CPPRINTER_SOURCES})
 
 target_link_libraries(cpprinter PRIVATE pthread)
 

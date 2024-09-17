@@ -1,7 +1,8 @@
 #include "cpprinter.hpp"
+#include "icecream_wrapper.hpp"
 
+#include "trace/address_resolution.hpp"
 #include "utils/fstream_wrapper.hpp"
-#include "utils/shared_object.hpp"
 #include "utils/thread.hpp"
 #include "utils/time.hpp"
 
@@ -49,16 +50,7 @@ void FunctionProfiler::logCallStack() {
 
     for (size_t i = 0; i < size; i++) {
         stackLog << symbols[i] << std::endl;
-
-        // 提取 .so 文件路径和地址
-        auto [so_path, addr] = extractSharedObjectAndAddress(symbols[i]);
-
-        if (!so_path.empty() && addr) {
-            // 使用 addr2line 获取具体代码行号
-            stackLog << addr2line(so_path, addr) << std::endl;
-        } else {
-            stackLog << "Unable to extract .so path or address" << std::endl;
-        }
+        stackLog << getSourceFromSymbol(symbols[i]) << std::endl;
     }
 
 }

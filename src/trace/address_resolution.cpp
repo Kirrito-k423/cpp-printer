@@ -1,3 +1,4 @@
+#include "address_resolution.hpp"
 #include "icecream_wrapper.hpp"
 
 #include <execinfo.h>
@@ -10,7 +11,8 @@
 #include <cstdio>
 #include <regex>
 
-
+namespace cpprinter{
+    
 // 获取当前进程的共享对象的基地址
 std::string getSharedObjectBaseAddress(const std::string& so_name) {
     std::ifstream maps("/proc/self/maps");
@@ -86,4 +88,17 @@ std::pair<std::string, void*> extractSharedObjectAndAddress(const std::string& s
     }
 
     return {"", nullptr};
+}
+
+std::string getSourceFromSymbol(const std::string& symbol){
+    // 提取 .so 文件路径和地址
+    auto [so_path, addr] = extractSharedObjectAndAddress(symbol);
+
+    if (!so_path.empty() && addr) {
+        // 使用 addr2line 获取具体代码行号
+        return addr2line(so_path, addr);
+    } else {
+        return "Unable to extract .so path or address";
+    }
+}
 }
