@@ -9,6 +9,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <cstdio>
+#include <algorithm>
 #include <regex>
 
 namespace cpprinter{
@@ -40,6 +41,32 @@ std::string getSharedObjectBaseAddress(const std::string& so_name) {
     return "";
 }
 
+std::string get_code_snippet(const std::string& file_name, int line_number, int before = 8, int after = 2) {
+    std::ifstream source_file(file_name);
+    if (!source_file.is_open()) {
+        return "Error opening source file: " + file_name;
+    }
+
+    std::string code_snippet;
+    std::string line;
+    int current_line = 1;
+    int start_line = std::max(1, line_number - before);  // 'before' lines before target
+    int end_line = line_number + after;  // 'after' lines after target
+
+    while (std::getline(source_file, line)) {
+        if (current_line >= start_line && current_line <= end_line) {
+            code_snippet += std::to_string(current_line) + ": " + line + "\n";
+        }
+        if (current_line > end_line) {
+            break;
+        }
+        current_line++;
+    }
+
+    source_file.close();
+    return code_snippet.empty() ? "No code snippet available" : code_snippet;
+}
+
 // 调用 addr2line，使用相对地址解析符号
 std::string addr2line(const std::string& so_path, void* addr) {
     // 获取共享对象的基地址
@@ -68,12 +95,24 @@ std::string addr2line(const std::string& so_path, void* addr) {
 
     char buffer[256];
     std::string result;
+    std::string file_name;
+    int line_number = -1;
     while (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
         result += buffer;
+        // If this line contains a source file and line number (i.e., "/path/to/file:100")
+        if (sscanf(buffer, "%[^:]:%d", buffer, &line_number) == 2) {
+            file_name = buffer;
+        }
     }
     pclose(pipe);
 
-    return result.empty() ? "No information available" : result;
+    if (file_name.empty() || line_number == -1) {
+        return result.empty() ? "No information available" : result;
+    }
+
+    // Use the new get_code_snippet function to get surrounding code
+    std::string code_snippet = get_code_snippet(file_name, line_number);
+    return result + "\nCode snippet:\n" + code_snippet;
 }
 
 // 从 backtrace_symbols 中提取 .so 路径和地址
