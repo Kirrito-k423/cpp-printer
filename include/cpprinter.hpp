@@ -48,8 +48,10 @@ private:
     // 线程独立的计数器
     static inline thread_local int callCount_ = 0;
     CallTrace* calltrace_;
+    static inline thread_local bool printed_ = false; 
 
 private:
+    void printInfoOnce();
     std::string getResultPath();
     void logCallStack();
     void logStats();

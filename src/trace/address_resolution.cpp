@@ -99,13 +99,13 @@ std::string addr2line(const std::string& so_path, void* addr) {
     std::string file_name;
     int line_number = -1;
     while (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
+        result += buffer;
+        
         // Remove trailing newline character if present
         size_t len = std::strlen(buffer);
         if (len > 0 && buffer[len - 1] == '\n') {
             buffer[len - 1] = '\0';
         }
-
-        result += buffer;
 
         // If this line contains a source file and line number (i.e., "/path/to/file:100")
         // Parse the addr2line output for the file name and line number

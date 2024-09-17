@@ -15,7 +15,8 @@
 namespace cpprinter{
 
 FunctionProfiler::FunctionProfiler(const std::string& funcName)
-        : functionName_(funcName), startTime_(std::chrono::high_resolution_clock::now()) {
+        : functionName_(funcName), 
+          startTime_(std::chrono::high_resolution_clock::now()) {
     IC_CONFIG.disable();
     // IC_CONFIG.enable();
     calltrace_ = new CallTrace();
@@ -25,8 +26,16 @@ FunctionProfiler::FunctionProfiler(const std::string& funcName)
 
 FunctionProfiler::~FunctionProfiler() {
     logStats();
-    std::cout << "FunctionProfiler to /tmp/cpp_" << std::to_string(getpid()) << std::endl;
+    printInfoOnce();
     delete calltrace_;
+}
+
+void FunctionProfiler::printInfoOnce() {
+    if (!printed_) {
+        std::cout << "FunctionProfiler to /tmp/cpp_" << std::to_string(getpid()) 
+                  << "/" + std::to_string(get_thread_id())  << std::endl;
+        printed_ = true;  // Mark it as printed
+    }
 }
 
 std::string FunctionProfiler::getThreadFileName(const std::string& funcName, const std::string& suffix) {
