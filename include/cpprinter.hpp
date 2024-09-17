@@ -32,6 +32,8 @@
 
 namespace cpprinter{
 
+class CallTrace;
+
 class FunctionProfiler {
 public:
     FunctionProfiler(const std::string& funcName);
@@ -45,6 +47,7 @@ private:
     std::chrono::high_resolution_clock::time_point startTime_;
     // 线程独立的计数器
     static inline thread_local int callCount_ = 0;
+    CallTrace* calltrace_;
 
 private:
     std::string getResultPath();

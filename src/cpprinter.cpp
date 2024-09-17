@@ -2,6 +2,7 @@
 #include "icecream_wrapper.hpp"
 
 #include "trace/address_resolution.hpp"
+#include "trace/calltrace.hpp"
 #include "utils/fstream_wrapper.hpp"
 #include "utils/thread.hpp"
 #include "utils/time.hpp"
@@ -17,6 +18,7 @@ FunctionProfiler::FunctionProfiler(const std::string& funcName)
         : functionName_(funcName), startTime_(std::chrono::high_resolution_clock::now()) {
     // IC_CONFIG.enable();
     IC_CONFIG.disable();
+    calltrace_ = new CallTrace();
     callCount_++;
     logCallStack();
 }
@@ -24,6 +26,7 @@ FunctionProfiler::FunctionProfiler(const std::string& funcName)
 FunctionProfiler::~FunctionProfiler() {
     logStats();
     std::cout << "FunctionProfiler to /tmp/cpp_" << std::to_string(getpid()) << std::endl;
+    delete calltrace_;
 }
 
 std::string FunctionProfiler::getThreadFileName(const std::string& funcName, const std::string& suffix) {
@@ -40,18 +43,10 @@ std::string FunctionProfiler::getResultPath(){
 
 void FunctionProfiler::logCallStack() {
     std::ofstream stackLog = getOfStream(getThreadFileName(functionName_, "funStack.log"));
-    
+    stackLog << "--------------------------------------" << std::endl;
     stackLog << "Time: " << getHumanReadableTime(startTime_) << ", Call " << callCount_ << std::endl;
-
-    // 获取调用栈
-    void* array[10];
-    size_t size = backtrace(array, 10);
-    char** symbols = backtrace_symbols(array, size);
-
-    for (size_t i = 0; i < size; i++) {
-        stackLog << symbols[i] << std::endl;
-        stackLog << getSourceFromSymbol(symbols[i]) << std::endl;
-    }
+    calltrace_->logCallStack(stackLog);
+    stackLog << "--------------------------------------" << std::endl << std::endl;
 
 }
 

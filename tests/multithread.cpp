@@ -15,7 +15,9 @@ void testFunctionProfiler2() {
 }
 
 int main() {
-    testFunctionProfiler();
+    for (int i=0; i<3; i++){
+        testFunctionProfiler();
+    }
     // 创建一个新线程来运行 testFunctionProfiler
     std::thread profilerThread(testFunctionProfiler);
     // 等待新线程完成
