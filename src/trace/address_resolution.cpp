@@ -94,14 +94,23 @@ std::string addr2line(const std::string& so_path, void* addr) {
     }
 
     char buffer[256];
+    char file_name_buffer[256]; // Separate buffer for the file name
     std::string result;
     std::string file_name;
     int line_number = -1;
     while (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
+        // Remove trailing newline character if present
+        size_t len = std::strlen(buffer);
+        if (len > 0 && buffer[len - 1] == '\n') {
+            buffer[len - 1] = '\0';
+        }
+
         result += buffer;
+
         // If this line contains a source file and line number (i.e., "/path/to/file:100")
-        if (sscanf(buffer, "%[^:]:%d", buffer, &line_number) == 2) {
-            file_name = buffer;
+        // Parse the addr2line output for the file name and line number
+        if (sscanf(buffer, "%[^:]:%d", file_name_buffer, &line_number) == 2) {
+            file_name = file_name_buffer; 
         }
     }
     pclose(pipe);
