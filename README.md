@@ -11,11 +11,11 @@ CMake FetchContent Usage:
 ```m
 include(FetchContent)
 FetchContent_Declare(
-  cpp_printer
+  cpp_printer # match project name
   GIT_REPOSITORY https://github.com/Kirrito-k423/cpp-printer.git
   GIT_TAG        v1.1.0
 )
-FetchContent_MakeAvailable(cpprinter)
+FetchContent_MakeAvailable(cpp_printer) # match project name
 
 target_link_libraries(your_project PRIVATE cpprinter)
 ```
@@ -25,8 +25,18 @@ target_link_libraries(your_project PRIVATE cpprinter)
 Simply insert `PROFILE_FUNCTION()` at the start of the function you wish to monitor. This will automatically log the function’s call stack, invocation count, and frequency.
 
 ```cpp
+#include "cpprinter.hpp"
 void exampleFunction() {
     PROFILE_FUNCTION(); // Automatically records function info
+}
+```
+
+Or using icecream-plus with tid and color info
+
+```cpp
+#include "icecream_wrapper.hpp"
+void exampleFunction() {
+    tIC(xxx); // printer the simple valiable xxx
 }
 ```
 
