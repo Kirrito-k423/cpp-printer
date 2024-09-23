@@ -13,8 +13,8 @@
 
 namespace cpprinter{
 
-thread_local queue<std::string> functionName_;
-thread_local queue<std::chrono::high_resolution_clock::time_point> startTime_;
+thread_local std::queue<std::string> functionName_;
+thread_local std::queue<std::chrono::high_resolution_clock::time_point> startTime_;
 thread_local std::shared_ptr<CallTrace> FunctionProfiler::calltrace_ = std::make_shared<CallTrace>();
 
 FunctionProfiler::FunctionProfiler(const char* funcName){
