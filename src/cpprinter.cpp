@@ -1,5 +1,4 @@
 #include "cpprinter.hpp"
-#include "icecream_wrapper.hpp"
 
 #include "trace/address_resolution.hpp"
 #include "trace/calltrace.hpp"
@@ -19,8 +18,6 @@ thread_local std::shared_ptr<CallTrace> FunctionProfiler::calltrace_ = std::make
 FunctionProfiler::FunctionProfiler(const char* funcName)
         : functionName_(std::string(funcName)), 
           startTime_(std::chrono::high_resolution_clock::now()){
-    IC_CONFIG.disable();
-    // IC_CONFIG.enable();
     callCount_++;
     logCallStack();
 }
