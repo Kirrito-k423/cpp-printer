@@ -36,6 +36,7 @@ Or using icecream-plus with tid and color info
 ```cpp
 #include "icecream_wrapper.hpp"
 void exampleFunction() {
+    // It seems will core dumped under some multithread situation.
     tIC(xxx); // printer the simple valiable xxx
 }
 ```

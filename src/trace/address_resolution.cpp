@@ -86,7 +86,8 @@ std::string addr2line(const std::string& so_path, void* addr) {
     std::ostringstream cmd;
     cmd << "addr2line -e " << so_path << " -fC " << std::hex << relative_address;
 
-    tIC(cmd.str());
+    // icecream core dumped under multithread situation
+    // tIC(cmd.str()); 
 
     FILE* pipe = popen(cmd.str().c_str(), "r");
     if (!pipe) {
