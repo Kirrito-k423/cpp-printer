@@ -14,8 +14,8 @@
 
 namespace cpprinter{
 
-FunctionProfiler::FunctionProfiler(const std::string& funcName)
-        : functionName_(funcName), 
+FunctionProfiler::FunctionProfiler(const char* funcName)
+        : functionName_(std::string(funcName)), 
           startTime_(std::chrono::high_resolution_clock::now()) {
     IC_CONFIG.disable();
     // IC_CONFIG.enable();
