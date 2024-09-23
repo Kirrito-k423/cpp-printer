@@ -14,10 +14,11 @@
 
 namespace cpprinter{
 
+std::shared_ptr<CallTrace> FunctionProfiler::calltrace_ = std::make_shared<CallTrace>();
+
 FunctionProfiler::FunctionProfiler(const char* funcName)
         : functionName_(std::string(funcName)), 
-          startTime_(std::chrono::high_resolution_clock::now()),
-          calltrace_(std::make_shared<CallTrace>()) {
+          startTime_(std::chrono::high_resolution_clock::now()){
     IC_CONFIG.disable();
     // IC_CONFIG.enable();
     callCount_++;
