@@ -59,6 +59,6 @@ private:
 };
 
 // 用 RAII 包装函数调用
-#define PROFILE_FUNCTION() cpprinter::FunctionProfiler profiler(__FUNCTION__);
+#define PROFILE_FUNCTION() cpprinter::FunctionProfiler profiler(std::string(__FUNCTION__));
 
 }//namespace cpprinter
