@@ -13,13 +13,15 @@
 
 namespace cpprinter{
 
+thread_local queue<std::string> functionName_;
+thread_local queue<std::chrono::high_resolution_clock::time_point> startTime_;
 thread_local std::shared_ptr<CallTrace> FunctionProfiler::calltrace_ = std::make_shared<CallTrace>();
 
-FunctionProfiler::FunctionProfiler(const char* funcName)
-        : functionName_(std::string(funcName)), 
-          startTime_(std::chrono::high_resolution_clock::now()){
+FunctionProfiler::FunctionProfiler(const char* funcName){
+    functionName_.push(std::string(funcName));
+    startTime_.push(std::chrono::high_resolution_clock::now());
     callCount_++;
-    logCallStack();
+    logCallStack(funcName);
 }
 
 FunctionProfiler::~FunctionProfiler() {
@@ -41,27 +43,23 @@ std::string FunctionProfiler::getThreadFileName(const std::string& funcName, con
     return "/tmp/cpp_" + std::to_string(pid) + "/" + std::to_string(tid) + "/" + funcName + "_" + suffix;
 }
 
-std::string FunctionProfiler::getResultPath(){
-    pid_t pid = getpid();
-    pid_t tid = get_thread_id();
-    return "/tmp/cpp_" + std::to_string(pid) + "/" + std::to_string(tid) + "/" + functionName_ + "_funStack.log";
-}
-
-void FunctionProfiler::logCallStack() {
-    std::ofstream stackLog = getOfStream(getThreadFileName(functionName_, "funStack.log"));
+void FunctionProfiler::logCallStack(const char* funcName) {
+    std::ofstream stackLog = getOfStream(getThreadFileName(std::string(funcName), "funStack.log"));
     stackLog << "--------------------------------------" << std::endl;
-    stackLog << "Time: " << getHumanReadableTime(startTime_) << ", Call " << callCount_ << std::endl;
+    stackLog << "Time: " << getHumanReadableTime(std::chrono::high_resolution_clock::now()) << ", Call " << callCount_ << std::endl;
     calltrace_->logCallStack(stackLog);
     stackLog << "--------------------------------------" << std::endl << std::endl;
 
 }
 
-
 void FunctionProfiler::logStats() {
-    auto statLog = getOfStream(getThreadFileName(functionName_, "stat.txt"));
-    statLog << "Time: " << getHumanReadableTime(startTime_) 
+    auto statLog = getOfStream(getThreadFileName(functionName_.front(), "stat.txt"));
+    functionName_.pop();
+    auto start_time = startTime_.front();
+    startTime_.pop();
+    statLog << "Time: " << getHumanReadableTime(start_time) 
             << ", Call " << callCount_ 
-            << ": Duration " << getDurationInMicroseconds(startTime_) 
+            << ": Duration " << getDurationInMicroseconds(start_time) 
             << " microseconds." << std::endl;
 }
 

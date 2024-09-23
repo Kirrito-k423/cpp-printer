@@ -29,6 +29,7 @@
 #include <chrono>
 #include <string>
 #include <memory>
+#include <queue> 
 
 namespace cpprinter{
 
@@ -43,8 +44,8 @@ public:
     static std::string getThreadFileName(const std::string& funcName, const std::string& suffix);
 
 private:
-    std::string functionName_;
-    std::chrono::high_resolution_clock::time_point startTime_;
+    static thread_local queue<std::string> functionName_;
+    static thread_local queue<std::chrono::high_resolution_clock::time_point> startTime_;
     // 线程独立的计数器
     static inline thread_local int callCount_ = 0;
     static thread_local std::shared_ptr<CallTrace> calltrace_;
@@ -52,8 +53,7 @@ private:
 
 private:
     void printInfoOnce();
-    std::string getResultPath();
-    void logCallStack();
+    void logCallStack(const char* funcName);
     void logStats();
 
 };
