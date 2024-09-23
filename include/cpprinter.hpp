@@ -47,7 +47,7 @@ private:
     std::chrono::high_resolution_clock::time_point startTime_;
     // 线程独立的计数器
     static inline thread_local int callCount_ = 0;
-    std::unique_ptr<CallTrace> calltrace_;
+    std::shared_ptr<CallTrace> calltrace_;
     static inline thread_local bool printed_ = false; 
 
 private:
