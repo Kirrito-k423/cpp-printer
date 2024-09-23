@@ -14,7 +14,7 @@
 
 namespace cpprinter{
 
-std::shared_ptr<CallTrace> FunctionProfiler::calltrace_ = std::make_shared<CallTrace>();
+thread_local std::shared_ptr<CallTrace> FunctionProfiler::calltrace_ = std::make_shared<CallTrace>();
 
 FunctionProfiler::FunctionProfiler(const char* funcName)
         : functionName_(std::string(funcName)), 
