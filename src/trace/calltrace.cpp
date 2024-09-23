@@ -40,7 +40,7 @@ void CallTrace::logCallStack(std::ofstream &stackLog) {
         stackLog << "重复调用栈，调用栈ID: " << stack_id << std::endl;
     } else {
         stackLog << "调用栈ID: " << stack_id << std::endl;
-        for (size_t i = 0; i < size; i++) {
+        for (size_t i = 3; i < size; i++) {
             stackLog << symbols[i] << std::endl;
             stackLog << getSourceFromSymbol(symbols[i]) << std::endl;
         }
