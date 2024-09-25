@@ -13,7 +13,7 @@ include(FetchContent)
 FetchContent_Declare(
   cpp_printer # match project name
   GIT_REPOSITORY https://github.com/Kirrito-k423/cpp-printer.git
-  GIT_TAG        v1.1.0
+  GIT_TAG        v1.2.7
 )
 FetchContent_MakeAvailable(cpp_printer) # match project name
 
@@ -47,6 +47,7 @@ void exampleFunction() {
   * Note: [icecream-cpp](https://github.com/renatoGarcia/icecream-cpp) is still under active development. You may need to update headers for new features or bug fixes.
 * [x] Supports multi-process/thread logging to `/tmp/{pid}/{tid}/{fun_name}.log`.
 * [ ] Planned support for Google Test integration.
+* [ ] virtualization with graphviz (not necessary due to callstack is not closely related)
 
 ## Limitations
 
