@@ -60,7 +60,7 @@ void FunctionProfiler::logStats() {
     statLog << "Time: " << getHumanReadableTime(start_time) 
             << ", Call " << callCount_ 
             << ": Duration " << getDurationInMicroseconds(start_time) 
-            << " microseconds." << std::endl;
+            << " microseconds.(1e-6 s)" << std::endl;
 }
 
 }
