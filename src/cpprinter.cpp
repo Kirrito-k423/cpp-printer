@@ -58,6 +58,7 @@ void FunctionProfiler::logStats() {
     auto start_time = startTime_.front();
     startTime_.pop();
     statLog << "Time: " << getHumanReadableTime(start_time) 
+            << ", SinceStart " << calculateMicrosecondsSinceStart(start_time)
             << ", Call " << callCount_ 
             << ": Duration " << getDurationInMicroseconds(start_time) 
             << " microseconds.(1e-6 s)" << std::endl;

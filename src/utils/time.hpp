@@ -34,5 +34,17 @@ long long getDurationInMicroseconds(const high_resolution_clock::time_point& sta
     return std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime).count();  // 计算持续时间
 }
 
+// 定义函数，传入时间点B，返回微秒差值
+long long calculateMicrosecondsSinceStart(std::chrono::high_resolution_clock::time_point B) {
+    // 获取程序启动时间（以high_resolution_clock为基准）
+    // auto programStart = std::chrono::high_resolution_clock::now().time_since_epoch();
+
+    // 计算程序启动到时间B的持续时间
+    auto duration = B.time_since_epoch();
+
+    // 将持续时间转换为微秒并返回
+    return std::chrono::duration_cast<std::chrono::microseconds>(duration).count();
+}
+
 
 }
