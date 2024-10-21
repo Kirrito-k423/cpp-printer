@@ -27,7 +27,7 @@ Simply insert `PROFILE_FUNCTION()` at the start of the function you wish to moni
 ```cpp
 #include "cpprinter.hpp"
 void exampleFunction() {
-    PROFILE_FUNCTION(); // Automatically records function info
+    PROFILE_FUNCTION(); // Automatically records function info, when `export CPPRINTER_RECORD_FUNCSTACK=1`
 }
 ```
 

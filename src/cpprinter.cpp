@@ -5,6 +5,7 @@
 #include "utils/fstream_wrapper.hpp"
 #include "utils/thread.hpp"
 #include "utils/time.hpp"
+#include "utils/env.hpp"
 
 #include <string>
 #include <thread>
@@ -47,7 +48,8 @@ void FunctionProfiler::logCallStack(const char* funcName) {
     std::ofstream stackLog = getOfStream(getThreadFileName(std::string(funcName), "funStack.log"));
     stackLog << "--------------------------------------" << std::endl;
     stackLog << "Time: " << getHumanReadableTime(std::chrono::high_resolution_clock::now()) << ", Call " << callCount_ << std::endl;
-    calltrace_->logCallStack(stackLog);
+    if (isFuncStackLoggingEnabled())
+        calltrace_->logCallStack(stackLog);
     stackLog << "--------------------------------------" << std::endl << std::endl;
 
 }
