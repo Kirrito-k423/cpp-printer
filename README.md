@@ -1,6 +1,6 @@
 # cpp-printer
 
-A lightweight utility for monitoring function behavior, including call stacks, timing, frequency, and call counts.
+A lightweight utility for monitoring **Multithread/Multiprocess** function behavior, including call stacks, timing, frequency, and call counts.
 
 ## Quick Usage
 
@@ -45,7 +45,7 @@ void exampleFunction() {
 
 * [x] Integrated with [icecream-cpp](https://github.com/renatoGarcia/icecream-cpp) and [cpptrace](https://github.com/jeremy-rifkin/cpptrace).
   * Note: [icecream-cpp](https://github.com/renatoGarcia/icecream-cpp) is still under active development. You may need to update headers for new features or bug fixes.
-* [x] Supports multi-process/thread logging to `/tmp/{pid}/{tid}/{fun_name}.log`.
+* [x] Supports **multi-process/thread logging** to `/tmp/{pid}/{tid}/{fun_name}.log`.
 * [ ] Planned support for Google Test integration.
 * [ ] virtualization with graphviz (not necessary due to callstack is not closely related)
 
