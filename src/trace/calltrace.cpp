@@ -31,8 +31,8 @@ bool CallTrace::isCallStackExisted(char **symbols, size_t size, int &stack_id) {
 }
 
 void CallTrace::logCallStack(std::ofstream &stackLog) {
-    void *array[10];
-    size_t size = backtrace(array, 10);
+    void *array[40];
+    size_t size = backtrace(array, 40);
     char **symbols = backtrace_symbols(array, size);
     
     int stack_id;
