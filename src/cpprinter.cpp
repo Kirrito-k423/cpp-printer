@@ -19,8 +19,8 @@ thread_local std::stack<std::string> FunctionProfiler::functionName_;
 thread_local std::stack<std::chrono::high_resolution_clock::time_point> FunctionProfiler::startTime_;
 thread_local std::shared_ptr<CallTrace> FunctionProfiler::calltrace_ = std::make_shared<CallTrace>();
 
-FunctionProfiler::FunctionProfiler(const char* funcName){
-    functionName_.push(std::string(funcName));
+FunctionProfiler::FunctionProfiler(const char* funcName, const char* description = ""){
+    functionName_.push(std::string(funcName)+"_"+std::string(description));
     startTime_.push(std::chrono::high_resolution_clock::now());
     callCount_++;
     logCallStack(funcName);
