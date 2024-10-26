@@ -37,7 +37,8 @@ class CallTrace;
 
 class FunctionProfiler {
 public:
-    FunctionProfiler(const char* funcName, const char* description = "");
+    FunctionProfiler(const char* funcName, const char* description);
+    FunctionProfiler(const char* funcName);
     ~FunctionProfiler();
 
     // static 静态函数不依赖于类的实例(也不能使用)，它可以在没有对象的情况下直接通过类名调用。 FunctionProfiler::getThreadFileName("myFunc", "log.txt");
@@ -59,6 +60,6 @@ private:
 };
 
 // 用 RAII 包装函数调用
-#define PROFILE_FUNCTION(...) cpprinter::FunctionProfiler profiler(__FUNCTION__, ##__VA_ARGS__)
+#define PROFILE_FUNCTION(...) cpprinter::FunctionProfiler profiler(__FUNCTION__, ##__VA_ARGS__ ? __VA_ARGS__ : "")
 
 }//namespace cpprinter

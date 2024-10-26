@@ -2,7 +2,7 @@
 #include <thread>
 
 void testFunctionProfiler2() {
-    PROFILE_FUNCTION();
+    PROFILE_FUNCTION("adddecs?");
     // 模拟工作
     std::this_thread::sleep_for(std::chrono::milliseconds(400));
 }
