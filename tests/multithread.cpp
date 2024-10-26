@@ -1,18 +1,17 @@
 #include "cpprinter.hpp"
 #include <thread>
 
+void testFunctionProfiler2() {
+    PROFILE_FUNCTION();
+    // 模拟工作
+    std::this_thread::sleep_for(std::chrono::milliseconds(400));
+}
+
 void testFunctionProfiler() {
     PROFILE_FUNCTION();
     // 模拟工作
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    testFunctionProfiler();
-}
-
-
-void testFunctionProfiler2() {
-    PROFILE_FUNCTION();
-    // 模拟工作
-    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+    testFunctionProfiler2();
 }
 
 int main() {

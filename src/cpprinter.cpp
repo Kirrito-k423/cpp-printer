@@ -14,8 +14,9 @@
 
 namespace cpprinter{
 
-thread_local std::queue<std::string> FunctionProfiler::functionName_;
-thread_local std::queue<std::chrono::high_resolution_clock::time_point> FunctionProfiler::startTime_;
+// for stacked 
+thread_local std::stack<std::string> FunctionProfiler::functionName_;
+thread_local std::stack<std::chrono::high_resolution_clock::time_point> FunctionProfiler::startTime_;
 thread_local std::shared_ptr<CallTrace> FunctionProfiler::calltrace_ = std::make_shared<CallTrace>();
 
 FunctionProfiler::FunctionProfiler(const char* funcName){
@@ -55,9 +56,9 @@ void FunctionProfiler::logCallStack(const char* funcName) {
 }
 
 void FunctionProfiler::logStats() {
-    auto statLog = getOfStream(getThreadFileName(functionName_.front(), "stat.txt"));
+    auto statLog = getOfStream(getThreadFileName(functionName_.top(), "stat.txt"));
     functionName_.pop();
-    auto start_time = startTime_.front();
+    auto start_time = startTime_.top();
     startTime_.pop();
     statLog << "Time: " << getHumanReadableTime(start_time) 
             << ", SinceStart " << calculateMicrosecondsSinceStart(start_time)
