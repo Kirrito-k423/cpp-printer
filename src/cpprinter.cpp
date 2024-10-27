@@ -11,6 +11,9 @@
 #include <thread>
 #include <sstream> // for ostringstream
 #include <iostream>
+#include <cstdio>
+#include <cstdarg>
+#include <fstream>
 
 namespace cpprinter{
 
@@ -52,16 +55,26 @@ std::string FunctionProfiler::getThreadFileName(const std::string& funcName, con
     return "/tmp/cpp_" + std::to_string(pid) + "/" + std::to_string(tid) + "/" + funcName + "_" + suffix;
 }
 
+void FunctionProfiler::record(const char* format, ...) {
+    // 创建一个足够大的缓冲区用于格式化字符串
+    char buffer[1024];
 
-void FunctionProfiler::record(const char* info){
+    // 使用 va_list 和 vsnprintf 处理变长参数
+    va_list args;
+    va_start(args, format);
+    std::vsnprintf(buffer, sizeof(buffer), format, args);
+    va_end(args);
+
     auto record_time = std::chrono::high_resolution_clock::now();
     auto recordLog = getOfStream(getThreadFileName(functionName_.top(), "record.txt"));
+
+    // 写入格式化后的信息
     recordLog << "Time: " << getHumanReadableTime(record_time) 
-            << ", SinceStart " << calculateMicrosecondsSinceStart(record_time)
-            << ", Call " << callCount_ 
-            << ": Duration " << getDurationInMicroseconds(record_time) 
-            << " microseconds.(1e-6 s)" 
-            << ", record: " << std::string(info) << std::endl;
+              << ", SinceStart " << calculateMicrosecondsSinceStart(record_time)
+              << ", Call " << callCount_ 
+              << ": Duration " << getDurationInMicroseconds(record_time) 
+              << " microseconds.(1e-6 s)"
+              << ", record: " << buffer << std::endl;
 }
 
 

@@ -1,6 +1,7 @@
 
 # 创建一个用于测试的可执行文件
 add_executable(test_printer multithread.cpp)
+add_executable(test_vargs vargs.cpp)
 
 # 为 test_printer 可执行文件设置头文件路径
 target_include_directories(test_printer PRIVATE

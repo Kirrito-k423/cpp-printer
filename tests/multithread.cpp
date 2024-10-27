@@ -1,16 +1,18 @@
 #include "cpprinter.hpp"
 #include <thread>
 
+static thread_local int key = 0;
 void testFunctionProfiler2() {
     PROFILE_FUNCTION_WITH_DESC("_add_decs");
+    PROFILE_RECORD("in func 2");
     // 模拟工作
     std::this_thread::sleep_for(std::chrono::milliseconds(400));
 }
 
 void testFunctionProfiler() {
     PROFILE_FUNCTION();
-
-    PROFILE_RECORD("key num is 1");
+    key += 1;
+    PROFILE_RECORD("key num is %d",key);
     // 模拟工作
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
     testFunctionProfiler2();
