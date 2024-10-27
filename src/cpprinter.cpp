@@ -43,9 +43,12 @@ FunctionProfiler::~FunctionProfiler() {
 
 void FunctionProfiler::printInfoOnce() {
     if (!printed_) {
-        std::cout << "FunctionProfiler to /tmp/cpp_" << std::to_string(getpid()) 
-                  << "/" + std::to_string(get_thread_id())  << std::endl;
-        printed_ = true;  // Mark it as printed
+        std::cout << std::endl  // 前置换行
+                  << "FunctionProfiler to /tmp/cpp_" << std::to_string(getpid()) 
+                  << "/" << std::to_string(get_thread_id()) 
+                  << std::endl << std::endl;  // 后置换行
+        std::cout.flush();  // 刷新输出缓冲区
+        printed_ = true;  // 标记为已输出
     }
 }
 
