@@ -13,7 +13,7 @@ include(FetchContent)
 FetchContent_Declare(
   cpp_printer # match project name
   GIT_REPOSITORY https://github.com/Kirrito-k423/cpp-printer.git
-  GIT_TAG        v1.2.12
+  GIT_TAG        v1.2.13
 )
 FetchContent_MakeAvailable(cpp_printer) # match project name
 
