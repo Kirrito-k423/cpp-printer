@@ -13,7 +13,7 @@ include(FetchContent)
 FetchContent_Declare(
   cpp_printer # match project name
   GIT_REPOSITORY https://github.com/Kirrito-k423/cpp-printer.git
-  GIT_TAG        v1.2.13
+  GIT_TAG        v1.2.14
 )
 FetchContent_MakeAvailable(cpp_printer) # match project name
 
@@ -28,6 +28,8 @@ Simply insert `PROFILE_FUNCTION()` at the start of the function you wish to moni
 #include "cpprinter.hpp"
 void exampleFunction() {
     PROFILE_FUNCTION(); // Automatically records function info, when `export CPPRINTER_RECORD_FUNCSTACK=1`
+    // or add desc info after function name
+    PROFILE_FUNCTION_WITH_DESC("_after_function_name")
 }
 ```
 
