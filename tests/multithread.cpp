@@ -9,6 +9,8 @@ void testFunctionProfiler2() {
 
 void testFunctionProfiler() {
     PROFILE_FUNCTION();
+
+    PROFILE_RECORD("key num is 1");
     // 模拟工作
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
     testFunctionProfiler2();

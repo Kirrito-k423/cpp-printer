@@ -43,6 +43,7 @@ public:
 
     // static 静态函数不依赖于类的实例(也不能使用)，它可以在没有对象的情况下直接通过类名调用。 FunctionProfiler::getThreadFileName("myFunc", "log.txt");
     static std::string getThreadFileName(const std::string& funcName, const std::string& suffix);
+    void record(const char* info);
 
 private:
     static thread_local std::stack<std::string> functionName_;
@@ -62,5 +63,6 @@ private:
 // 用 RAII 包装函数调用
 #define PROFILE_FUNCTION_WITH_DESC(...) cpprinter::FunctionProfiler profiler(__FUNCTION__, ##__VA_ARGS__)
 #define PROFILE_FUNCTION() cpprinter::FunctionProfiler profiler(__FUNCTION__)
+#define PROFILE_RECORD(...) profiler.record(__VA_ARGS__)
 
 }//namespace cpprinter

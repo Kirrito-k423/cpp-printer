@@ -52,6 +52,19 @@ std::string FunctionProfiler::getThreadFileName(const std::string& funcName, con
     return "/tmp/cpp_" + std::to_string(pid) + "/" + std::to_string(tid) + "/" + funcName + "_" + suffix;
 }
 
+
+void FunctionProfiler::record(const char* info){
+    auto record_time = std::chrono::high_resolution_clock::now();
+    auto recordLog = getOfStream(getThreadFileName(functionName_.top(), "record.txt"));
+    recordLog << "Time: " << getHumanReadableTime(record_time) 
+            << ", SinceStart " << calculateMicrosecondsSinceStart(record_time)
+            << ", Call " << callCount_ 
+            << ": Duration " << getDurationInMicroseconds(record_time) 
+            << " microseconds.(1e-6 s)" 
+            << ", record: " << std::string(info) << std::endl;
+}
+
+
 void FunctionProfiler::logCallStack(const char* funcName) {
     std::ofstream stackLog = getOfStream(getThreadFileName(std::string(funcName), "funStack.log"));
     stackLog << "--------------------------------------" << std::endl;
