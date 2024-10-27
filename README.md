@@ -13,7 +13,7 @@ include(FetchContent)
 FetchContent_Declare(
   cpp_printer # match project name
   GIT_REPOSITORY https://github.com/Kirrito-k423/cpp-printer.git
-  GIT_TAG        v1.2.14
+  GIT_TAG        v1.2.15
 )
 FetchContent_MakeAvailable(cpp_printer) # match project name
 
@@ -30,6 +30,9 @@ void exampleFunction() {
     PROFILE_FUNCTION(); // Automatically records function info, when `export CPPRINTER_RECORD_FUNCSTACK=1`
     // or add desc info after function name
     PROFILE_FUNCTION_WITH_DESC("_after_function_name")
+    // support record some info after insert PROFILE_FUNCTION()/PROFILE_FUNCTION_WITH_DESC()
+    int i=2333;
+    PROFILE_RECORD("i is %d",i);
 }
 ```
 
