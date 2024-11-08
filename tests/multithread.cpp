@@ -1,4 +1,6 @@
 #include "cpprinter.hpp"
+#include "ProcessInfo.hpp"
+
 #include <thread>
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -23,14 +25,20 @@ void testFunctionProfiler() {
 }
 
 int main() {
+    PROFILE_FUNCTION();
     // 创建主进程的测试循环
     for (int i = 0; i < 3; i++) {
         testFunctionProfiler();
     }
 
+    // 创建一个新线程来运行 testFunctionProfiler
+    std::thread profilerThread(testFunctionProfiler);
+    // 等待新线程完成
+    profilerThread.join();
+
     // 使用 fork 创建新进程
     pid_t pid = fork();
-    
+
     if (pid < 0) {
         // fork 失败
         perror("fork failed");
@@ -38,17 +46,13 @@ int main() {
     } else if (pid == 0) {
         // 子进程中运行 testFunctionProfiler
         printf("In child process with pid %d\n", getpid());
+        PROFILE_RECORD("%s", cpprinter::process_info::getProcessInfo().c_str());
         testFunctionProfiler();
     } else {
         // 父进程中等待子进程完成
         printf("In parent process with pid %d, child pid is %d\n", getpid(), pid);
         waitpid(pid, nullptr, 0);
     }
-
-    // 创建一个新线程来运行 testFunctionProfiler
-    std::thread profilerThread(testFunctionProfiler);
-    // 等待新线程完成
-    profilerThread.join();
 
     // 在主进程中继续测试
     testFunctionProfiler();

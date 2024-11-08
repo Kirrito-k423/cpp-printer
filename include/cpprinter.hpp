@@ -29,9 +29,9 @@
 #include <chrono>
 #include <string>
 #include <memory>
-#include <stack> 
+#include <stack>
 
-namespace cpprinter{
+namespace cpprinter {
 
 class CallTrace;
 
@@ -51,7 +51,7 @@ private:
     // 线程独立的计数器
     static inline thread_local int callCount_ = 0;
     static thread_local std::shared_ptr<CallTrace> calltrace_;
-    static inline thread_local bool printed_ = false; 
+    static inline thread_local bool printed_ = false;
 
 private:
     void printInfoOnce();

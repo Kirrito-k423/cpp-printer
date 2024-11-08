@@ -34,7 +34,7 @@ void CallTrace::logCallStack(std::ofstream &stackLog) {
     void *array[40];
     size_t size = backtrace(array, 40);
     char **symbols = backtrace_symbols(array, size);
-    
+
     int stack_id;
     if (isCallStackExisted(symbols, size, stack_id)) {
         stackLog << "重复调用栈，调用栈ID: " << stack_id << std::endl;
