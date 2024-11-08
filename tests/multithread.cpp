@@ -20,7 +20,7 @@ void testFunctionProfiler() {
     key += 1;
     PROFILE_RECORD("key num is %d", key);
     // 模拟工作
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    std::this_thread::sleep_for(std::chrono::milliseconds(400));
     testFunctionProfiler2();
 }
 
@@ -33,8 +33,7 @@ int main() {
 
     // 创建一个新线程来运行 testFunctionProfiler
     std::thread profilerThread(testFunctionProfiler);
-    // 等待新线程完成
-    profilerThread.join();
+    PROFILE_RECORD("%s", cpprinter::process_info::ProcessInfo::getProcessInfo().c_str());
 
     // 使用 fork 创建新进程
     pid_t pid = fork();
@@ -48,11 +47,16 @@ int main() {
         printf("In child process with pid %d\n", getpid());
         PROFILE_RECORD("%s", cpprinter::process_info::ProcessInfo::getProcessInfo().c_str());
         testFunctionProfiler();
+        // std::this_thread::sleep_for(std::chrono::milliseconds(400000000));
     } else {
         // 父进程中等待子进程完成
         printf("In parent process with pid %d, child pid is %d\n", getpid(), pid);
+        PROFILE_RECORD("%s", cpprinter::process_info::ProcessInfo::getProcessInfo().c_str());
         waitpid(pid, nullptr, 0);
     }
+
+    // 等待新线程完成
+    profilerThread.join();
 
     // 在主进程中继续测试
     testFunctionProfiler();

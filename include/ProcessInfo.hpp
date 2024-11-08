@@ -21,9 +21,9 @@ namespace cpprinter {
             static pid_t getCurrentPID();
             static std::string readFile(const std::string& path);
             static bool isNumber(const std::string& str);
-            static std::map<pid_t, std::string> getSubprocesses(pid_t pid);
             static std::map<pid_t, std::string> getThreads(pid_t pid);
-            static std::string formatInfo(pid_t pid, const std::map<pid_t, std::string>& subprocesses, const std::map<pid_t, std::string>& threads);
+            static std::string pstreeInfo();
+            static std::string formatInfo(pid_t pid, const std::map<pid_t, std::string>& threads);
         };
 
     } // namespace process_info

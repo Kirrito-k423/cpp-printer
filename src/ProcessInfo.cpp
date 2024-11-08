@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include "utils/CLI.hpp"
 
 namespace cpprinter {
     namespace process_info {
@@ -32,46 +33,6 @@ namespace cpprinter {
             return true;
         }
 
-        std::map<pid_t, std::string> ProcessInfo::getSubprocesses(pid_t pid) {
-            std::map<pid_t, std::string> subprocesses;
-            DIR* dir = opendir("/proc");
-            if (dir == nullptr) {
-                std::cerr << "Failed to open /proc directory" << std::endl;
-                return subprocesses;
-            }
-
-            struct dirent* entry;
-            while ((entry = readdir(dir)) != nullptr) {
-                if (isNumber(entry->d_name)) {
-                    pid_t child_pid = std::stoi(entry->d_name);
-                    std::string status_path = std::string("/proc/") + entry->d_name + "/status";
-                    std::string status_content = readFile(status_path);
-
-                    std::istringstream iss(status_content);
-                    std::string line;
-                    while (std::getline(iss, line)) {
-                        if (line.find("PPid:") == 0) {
-                            std::istringstream line_iss(line);
-                            std::string key, value;
-                            line_iss >> key >> value;
-                            if (std::stoi(value) == pid) {
-                                while (std::getline(iss, line)) {
-                                    if (line.find("Name:") == 0) {
-                                        std::istringstream name_iss(line);
-                                        name_iss >> key >> value;
-                                        subprocesses[child_pid] = value;
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            closedir(dir);
-            return subprocesses;
-        }
 
         std::map<pid_t, std::string> ProcessInfo::getThreads(pid_t pid) {
             std::map<pid_t, std::string> threads;
@@ -96,14 +57,8 @@ namespace cpprinter {
             return threads;
         }
 
-        std::string ProcessInfo::formatInfo(pid_t pid, const std::map<pid_t, std::string>& subprocesses, const std::map<pid_t, std::string>& threads) {
+        std::string ProcessInfo::formatInfo(pid_t pid, const std::map<pid_t, std::string>& threads) {
             std::ostringstream oss;
-            oss << "Current Process ID: " << pid << "\n\n";
-
-            oss << "Subprocesses:\n";
-            for (const auto& [child_pid, name] : subprocesses) {
-                oss << "PID: " << child_pid << ", Name: " << name << "\n";
-            }
 
             oss << "\nThreads:\n";
             for (const auto& [tid, name] : threads) {
@@ -113,11 +68,15 @@ namespace cpprinter {
             return oss.str();
         }
 
+        std::string ProcessInfo::pstreeInfo() {
+            std::string command = "pstree -p " + std::to_string(getpid());
+            return CLI::executeCommand(command);
+        }
+
         std::string ProcessInfo::getProcessInfo() {
             pid_t current_pid = getCurrentPID();
-            std::map<pid_t, std::string> subprocesses = getSubprocesses(current_pid);
             std::map<pid_t, std::string> threads = getThreads(current_pid);
-            return formatInfo(current_pid, subprocesses, threads);
+            return std::string("\n") + pstreeInfo() + formatInfo(current_pid, threads);
         }
 
     } // namespace process_info
