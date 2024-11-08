@@ -18,6 +18,7 @@ file(GLOB_RECURSE CPPRINTER_SOURCES "src/*.cpp")
 add_library(cpprinter ${CPPRINTER_SOURCES})
 
 target_link_libraries(cpprinter PRIVATE pthread)
+target_link_libraries(cpprinter PRIVATE stdc++fs)
 
 # 包含头文件路径
 target_include_directories(cpprinter PUBLIC

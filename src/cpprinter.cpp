@@ -14,26 +14,41 @@
 #include <cstdio>
 #include <cstdarg>
 #include <fstream>
+#include <filesystem>
 
 namespace cpprinter{
 
-// for stacked 
+const std::string savePrefix="/tmp/cpp_";
+
+// for stacked
 thread_local std::stack<std::string> FunctionProfiler::functionName_;
 thread_local std::stack<std::chrono::high_resolution_clock::time_point> FunctionProfiler::startTime_;
 thread_local std::shared_ptr<CallTrace> FunctionProfiler::calltrace_ = std::make_shared<CallTrace>();
 
-FunctionProfiler::FunctionProfiler(const char* funcName, const char* description = ""){
-    functionName_.push(std::string(funcName)+std::string(description));
+void FunctionProfiler::childProcessInit(){
+    // 检查 /tmp/{ppid()} 路径是否存在 并且 /tmp/{pid()} 不存在
+    std::string ppath = savePrefix + std::to_string(getppid());
+    std::string path = savePrefix + std::to_string(getpid());
+    if (std::filesystem::exists(ppath) && !std::filesystem::exists(path)) {
+        printed_ = false;
+    }
+}
+
+void FunctionProfiler::initialize(const std::string& fullName) {
+    functionName_.push(fullName);
     startTime_.push(std::chrono::high_resolution_clock::now());
     callCount_++;
-    logCallStack(funcName);
+    childProcessInit();
+    logCallStack(fullName.c_str());
+
+}
+
+FunctionProfiler::FunctionProfiler(const char* funcName, const char* description = ""){
+    initialize(std::string(funcName)+std::string(description));
 }
 
 FunctionProfiler::FunctionProfiler(const char* funcName){
-    functionName_.push(std::string(funcName));
-    startTime_.push(std::chrono::high_resolution_clock::now());
-    callCount_++;
-    logCallStack(funcName);
+    initialize(std::string(funcName));
 }
 
 FunctionProfiler::~FunctionProfiler() {
@@ -44,8 +59,8 @@ FunctionProfiler::~FunctionProfiler() {
 void FunctionProfiler::printInfoOnce() {
     if (!printed_) {
         std::cout << std::endl  // 前置换行
-                  << "FunctionProfiler to /tmp/cpp_" << std::to_string(getpid()) 
-                  << "/" << std::to_string(get_thread_id()) 
+                  << "FunctionProfiler to " << savePrefix << std::to_string(getpid())
+                  << "/" << std::to_string(get_thread_id())
                   << std::endl << std::endl;  // 后置换行
         std::cout.flush();  // 刷新输出缓冲区
         printed_ = true;  // 标记为已输出
@@ -55,10 +70,13 @@ void FunctionProfiler::printInfoOnce() {
 std::string FunctionProfiler::getThreadFileName(const std::string& funcName, const std::string& suffix) {
     pid_t pid = getpid();
     pid_t tid = get_thread_id();
-    return "/tmp/cpp_" + std::to_string(pid) + "/" + std::to_string(tid) + "/" + funcName + "_" + suffix;
+    return savePrefix + std::to_string(pid) + "/" + std::to_string(tid) + "/" + funcName + "_" + suffix;
 }
 
 void FunctionProfiler::record(const char* format, ...) {
+    // reinit for PROFILE_RECORD(); in child process
+    childProcessInit();
+
     // 创建一个足够大的缓冲区用于格式化字符串
     char buffer[1024];
 

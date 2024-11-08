@@ -46,7 +46,7 @@ int main() {
     } else if (pid == 0) {
         // 子进程中运行 testFunctionProfiler
         printf("In child process with pid %d\n", getpid());
-        PROFILE_RECORD("%s", cpprinter::process_info::getProcessInfo().c_str());
+        PROFILE_RECORD("%s", cpprinter::process_info::ProcessInfo::getProcessInfo().c_str());
         testFunctionProfiler();
     } else {
         // 父进程中等待子进程完成

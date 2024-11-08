@@ -54,6 +54,8 @@ private:
     static inline thread_local bool printed_ = false;
 
 private:
+    void initialize(const std::string& fullName);
+    void childProcessInit();
     void printInfoOnce();
     void logCallStack(const char* funcName);
     void logStats();

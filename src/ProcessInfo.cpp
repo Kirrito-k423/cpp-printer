@@ -44,7 +44,7 @@ namespace cpprinter {
             while ((entry = readdir(dir)) != nullptr) {
                 if (isNumber(entry->d_name)) {
                     pid_t child_pid = std::stoi(entry->d_name);
-                    std::string status_path = "/proc/" + entry->d_name + "/status";
+                    std::string status_path = std::string("/proc/") + entry->d_name + "/status";
                     std::string status_content = readFile(status_path);
 
                     std::istringstream iss(status_content);
