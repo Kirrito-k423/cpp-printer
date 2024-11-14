@@ -3,6 +3,7 @@ import json
 import re
 import argparse
 from icecream import ic
+import itertools
 
 def extract_stat_trace_event(line, pid, tid, name):
     """
@@ -15,7 +16,7 @@ def extract_stat_trace_event(line, pid, tid, name):
         ts = int(match.group(1))  # SinceStart 对应 ts
         Call = int(match.group(2))  # Duration 对应 dur
         dur = int(match.group(3))  # Duration 对应 dur
-        
+
         # 构造 tracing 事件
         event = {
             "pid": pid,  # 假设是一个进程，可以根据需要修改
@@ -31,21 +32,52 @@ def extract_stat_trace_event(line, pid, tid, name):
         return event
     return None
 
+import re
+import os
 
-def extract_record_trace_event(line, pid, tid):
+def parse_trace_file(file_path, pid, tid):
+    trace_events = []
+    with open(file_path, 'r') as f:
+        line = f.readline()
+        while line:
+            # 检查是否匹配 SinceStart 的模式
+            event = extract_record_trace_event(line, pid, tid, f)
+            if event:
+                trace_events.append(event)
+            line = f.readline()
+    return trace_events
+
+def nextLine(lookahead):
+    try:
+        return next(lookahead)  # 获取下一行
+    except StopIteration:
+        return None  # 如果没有下一行
+
+def extract_record_trace_event(line, pid, tid, lookahead):
     """
     从一行文本中提取 ts 和 dur，并生成一个 tracing 事件。
     """
-    ic(line, tid)
-    # 使用正则表达式提取 SinceStart 和 Duration
     match = re.search(r'SinceStart (\d+), Call \d+: Duration (\d+) microseconds.\(1e-6 s\), record: (.*)', line)
     if match:
-        ic("got match!!!")
         # 提取 ts 和 dur
         ts = int(match.group(1))  # SinceStart 对应 ts
         dur = int(match.group(2))  # Duration 对应 dur
-        info = str(match.group(3))  # Duration 对应 dur
-        
+
+        # 从当前行中提取初始的 info 内容
+        info_lines = [match.group(3)]
+
+        next_line = nextLine(lookahead)
+        # 继续读取多行的 info 内容
+        if line == next_line:
+            next_line = nextLine(lookahead)
+            
+        while next_line and not re.match(r'.+SinceStart \d+, Call \d+: Duration \d+ microseconds.\(1e-6 s\), record:.?', next_line):
+            info_lines.append(next_line)
+            next_line = nextLine(lookahead)
+
+        # 合并所有 info 行，不去掉换行符
+        info = "".join(info_lines)
+
         # 构造 tracing 事件
         event = {
             "pid": pid,  # 假设是一个进程，可以根据需要修改
@@ -55,12 +87,11 @@ def extract_record_trace_event(line, pid, tid):
             "name": "record",  # 事件名称
             "dur": dur,  # 事件持续时间
             "args": {
-                "info": info
+                "info": info  # 包含完整的多行 info
             }
         }
         return event
     return None
-
 
 def extract_paths_from_log(log_file):
     """
@@ -68,13 +99,13 @@ def extract_paths_from_log(log_file):
     """
     paths = set()
     pattern = re.compile(r'/tmp/cpp_\d+')
-    
+
     with open(log_file, 'r') as f:
         for line in f:
             match = pattern.search(line)
             if match:
                 paths.add(match.group(0))
-    
+
     return list(paths)
 
 def parse_files(base_dir):
@@ -85,7 +116,7 @@ def parse_files(base_dir):
 
     pattern = re.compile(r'/tmp/cpp_(\d+)')
     match = pattern.search(base_dir)
-    pid = match.group(1) 
+    pid = match.group(1)
 
     # 遍历 base_dir 目录下的文件和文件夹
     for root, dirs, files in os.walk(base_dir):
@@ -94,7 +125,7 @@ def parse_files(base_dir):
             if file.endswith("_stat.txt"):
                 # 提取 tid 和 name
                 name = file.replace("_stat.txt", "")
-                
+
                 # 打开并解析文件
                 with open(os.path.join(root, file), 'r') as f:
                     for line in f:
@@ -104,8 +135,16 @@ def parse_files(base_dir):
             if file.endswith("_record.txt"):
                 # 打开并解析文件
                 with open(os.path.join(root, file), 'r') as f:
-                    for line in f:
-                        event = extract_record_trace_event(line, pid, tid)
+                    lines = f.readlines()  # 读取所有行
+                    it = iter(lines)
+                    
+                    # 使用 itertools.tee 来同时获取两个迭代器
+                    lookahead, current = itertools.tee(it)
+                    
+                    # 逐行处理
+                    for current_line in current:
+                        # 处理当前行和下一行
+                        event = extract_record_trace_event(current_line, pid, tid, lookahead)
                         if event:
                             trace_events.append(event)
 
