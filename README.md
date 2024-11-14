@@ -2,6 +2,9 @@
 
 A lightweight utility for monitoring **Multithread/Multiprocess** function behavior, including call stacks, timing, frequency, and call counts.
 
+<!-- START doctoc -->
+<!-- END doctoc -->
+
 ## Quick Usage
 
 ### Installation
@@ -13,7 +16,7 @@ include(FetchContent)
 FetchContent_Declare(
   cpp_printer # match project name
   GIT_REPOSITORY https://github.com/Kirrito-k423/cpp-printer.git
-  GIT_TAG        v1.2.15
+  GIT_TAG        v1.2.16
 )
 FetchContent_MakeAvailable(cpp_printer) # match project name
 
@@ -21,7 +24,9 @@ target_link_libraries(your_project PRIVATE cpprinter)
 ```
 
 ### API Usage
- 
+
+#### `PROFILE_FUNCTION()` & `PROFILE_RECORD("i is %d",i);`
+
 Simply insert `PROFILE_FUNCTION()` at the start of the function you wish to monitor. This will automatically log the function’s call stack, invocation count, and frequency.
 
 ```cpp
@@ -44,6 +49,15 @@ void exampleFunction() {
     // It seems will core dumped under some multithread situation.
     tIC(xxx); // printer the simple valiable xxx
 }
+```
+
+#### System Information
+
+To log additional system information using `PROFILE_RECORD("i is %d",i);`, you can use the following code:
+
+```c++
+#include "ProcessInfo.hpp"
+PROFILE_RECORD("%s", cpprinter::process_info::ProcessInfo::getProcessInfo().c_str());
 ```
 
 ## Features
