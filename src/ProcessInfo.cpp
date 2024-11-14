@@ -69,7 +69,7 @@ namespace cpprinter {
         }
 
         std::string ProcessInfo::pstreeInfo() {
-            std::string command = "pstree -p " + std::to_string(getpid());
+            std::string command = "pstree -a -t -n -p " + std::to_string(getpid());
             return CLI::executeCommand(command);
         }
 
