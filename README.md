@@ -6,15 +6,16 @@ A lightweight utility for monitoring **Multithread/Multiprocess** function behav
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**
 
-- [Quick Usage](#quick-usage)
-  - [Installation](#installation)
-  - [API Usage](#api-usage)
-    - [`PROFILE_FUNCTION()` & `PROFILE_RECORD("i is %d",i);`](#profile_function--profile_recordi-is-di)
-    - [System Information](#system-information)
-- [Features](#features)
-- [Limitations](#limitations)
-- [Motivation](#motivation)
-- [Known Issues / To Do](#known-issues--to-do)
+- [cpp-printer](#cpp-printer)
+  - [Quick Usage](#quick-usage)
+    - [Installation](#installation)
+    - [API Usage](#api-usage)
+      - [`PROFILE_FUNCTION()` \& `PROFILE_RECORD("i is %d",i);`](#profile_function--profile_recordi-is-di)
+      - [System Information](#system-information)
+  - [Features](#features)
+  - [Limitations](#limitations)
+  - [Motivation](#motivation)
+  - [Known Issues / To Do](#known-issues--to-do)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -25,6 +26,9 @@ A lightweight utility for monitoring **Multithread/Multiprocess** function behav
 CMake FetchContent Usage:
 
 ```m
+// if undefied symbol, maybe C++ ABI problem（default is 1）
+set(CPPRINTER_USE_CXX11_ABI 0 CACHE STRING "Set to 1 to enable CXX11 ABI")
+
 include(FetchContent)
 FetchContent_Declare(
   cpp_printer # match project name
