@@ -10,6 +10,7 @@ A lightweight utility for monitoring **Multithread/Multiprocess** function behav
   - [Installation](#installation)
   - [API Usage](#api-usage)
     - [`PROFILE_FUNCTION()` & `PROFILE_RECORD("i is %d",i);`](#profile_function--profile_recordi-is-di)
+  - [Fast Recompile](#fast-recompile)
     - [System Information](#system-information)
 - [Features](#features)
 - [Limitations](#limitations)
