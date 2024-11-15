@@ -67,6 +67,28 @@ void exampleFunction() {
 }
 ```
 
+### Fast Recompile
+
+When you add cppriner in a big CMake Project, and change the csrc of cpprinter, how to fast recompile
+
+```bash
+#=============================================================================
+ # Target rules for targets named cpprinter
+
+ # Build rule for target.
+ cpprinter: cmake_check_build_system
+     $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 cpprinter
+ .PHONY : cpprinter
+
+ # fast build rule for target.
+ cpprinter/fast:
+     $(MAKE) $(MAKESILENT) -f _deps/cpp_printer-build/CMakeFiles/cpprinter.dir/build.make _deps/cpp_printer-build/CMakeFiles/cpprinter.dir/build
+ .PHONY : cpprinter/fast
+```
+
+* You can `rm build/_deps; make cpprinter` to redownload cpprinter and compile
+* Or just `make cpprinter/fast` to compile your local code change.
+
 #### System Information
 
 To log additional system information using `PROFILE_RECORD("i is %d",i);`, you can use the following code:
