@@ -62,15 +62,16 @@ namespace cpprinter {
 
             oss << "\nThreads:\n";
             for (const auto& [tid, name] : threads) {
-                oss << "TID: " << tid << ", Name: " << name << "\n";
+                oss << "TID: " << tid << ", Name: " << name;
             }
 
             return oss.str();
         }
 
         std::string ProcessInfo::pstreeInfo() {
+            std::string commandWithoutThread = "pstree -a -T -t -n -p " + std::to_string(getpid());
             std::string command = "pstree -a -t -n -p " + std::to_string(getpid());
-            return CLI::executeCommand(command);
+            return CLI::executeCommand(commandWithoutThread) + "\n" + CLI::executeCommand(command);
         }
 
         std::string ProcessInfo::getProcessInfo() {
