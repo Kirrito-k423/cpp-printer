@@ -68,6 +68,15 @@ void exampleFunction() {
 }
 ```
 
+#### System Information
+
+To log additional system information using `PROFILE_RECORD("i is %d",i);`, you can use the following code:
+
+```c++
+#include "ProcessInfo.hpp"
+PROFILE_RECORD("%s", cpprinter::process_info::ProcessInfo::getProcessInfo().c_str());
+```
+
 ### Fast Recompile
 
 When you add cppriner in a big CMake Project, and change the csrc of cpprinter, how to fast recompile
@@ -90,14 +99,7 @@ When you add cppriner in a big CMake Project, and change the csrc of cpprinter, 
 * You can `rm build/_deps; make cpprinter` to redownload cpprinter and compile
 * Or just `make cpprinter/fast` to compile your local code change.
 
-#### System Information
 
-To log additional system information using `PROFILE_RECORD("i is %d",i);`, you can use the following code:
-
-```c++
-#include "ProcessInfo.hpp"
-PROFILE_RECORD("%s", cpprinter::process_info::ProcessInfo::getProcessInfo().c_str());
-```
 
 ## Features
 
