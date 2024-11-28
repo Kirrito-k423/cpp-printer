@@ -6,16 +6,18 @@ A lightweight utility for monitoring **Multithread/Multiprocess** function behav
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**
 
-- [Quick Usage](#quick-usage)
-  - [Installation](#installation)
-  - [API Usage](#api-usage)
-    - [`PROFILE_FUNCTION()` & `PROFILE_RECORD("i is %d",i);`](#profile_function--profile_recordi-is-di)
-    - [System Information](#system-information)
-  - [Fast Recompile](#fast-recompile)
-- [Features](#features)
-- [Limitations](#limitations)
-- [Motivation](#motivation)
-- [Known Issues / To Do](#known-issues--to-do)
+- [cpp-printer](#cpp-printer)
+  - [Quick Usage](#quick-usage)
+    - [Installation](#installation)
+    - [API Usage](#api-usage)
+      - [`PROFILE_FUNCTION()` \& `PROFILE_RECORD("i is %d",i);`](#profile_function--profile_recordi-is-di)
+      - [System Information](#system-information)
+    - [env variable](#env-variable)
+    - [Fast Recompile](#fast-recompile)
+  - [Features](#features)
+  - [Limitations](#limitations)
+  - [Motivation](#motivation)
+  - [Known Issues / To Do](#known-issues--to-do)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -76,6 +78,13 @@ To log additional system information using `PROFILE_RECORD("i is %d",i);`, you c
 #include "ProcessInfo.hpp"
 PROFILE_RECORD("%s", cpprinter::process_info::ProcessInfo::getProcessInfo().c_str());
 ```
+
+### env variable
+
+| env variable | description | default |
+| --- | --- | --- |
+| CPPRINTER_RECORD_FUNCSTACK | Enable function stack recording | 0 |
+| CPPRINTER_OFF | disable all cpprinter output | 0 |
 
 ### Fast Recompile
 
