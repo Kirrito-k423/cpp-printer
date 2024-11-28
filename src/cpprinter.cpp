@@ -25,7 +25,7 @@ thread_local std::stack<std::string> FunctionProfiler::functionName_;
 thread_local std::stack<std::chrono::high_resolution_clock::time_point> FunctionProfiler::startTime_;
 thread_local std::shared_ptr<CallTrace> FunctionProfiler::calltrace_ = std::make_shared<CallTrace>();
 
-void FunctionProfiler::childProcessInit(){
+void FunctionProfiler::CheckChildProcessInit(){
     // 检查 /tmp/{ppid()} 路径是否存在 并且 /tmp/{pid()} 不存在
     std::string ppath = savePrefix + std::to_string(getppid());
     std::string path = savePrefix + std::to_string(getpid());
@@ -38,7 +38,7 @@ void FunctionProfiler::initialize(const std::string& fullName) {
     functionName_.push(fullName);
     startTime_.push(std::chrono::high_resolution_clock::now());
     callCount_++;
-    childProcessInit();
+    CheckChildProcessInit();
     logCallStack(fullName.c_str());
 
 }
@@ -74,7 +74,7 @@ std::string FunctionProfiler::getThreadFileName(const std::string& funcName, con
 }
 
 void FunctionProfiler::record(const char* format, ...) {
-    childProcessInit();
+    CheckChildProcessInit();
 
     // 计算需要的缓冲区大小
     va_list args;
@@ -106,8 +106,11 @@ void FunctionProfiler::logCallStack(const char* funcName) {
     std::ofstream stackLog = getOfStream(getThreadFileName(std::string(funcName), "funStack.log"));
     stackLog << "--------------------------------------" << std::endl;
     stackLog << "Time: " << getHumanReadableTime(std::chrono::high_resolution_clock::now()) << ", Call " << callCount_ << std::endl;
-    if (isFuncStackLoggingEnabled())
+    if (isFuncStackLoggingEnabled()) {
+        record("FuncStack begin. %s", funcName);
         calltrace_->logCallStack(stackLog);
+        record("FuncStack end. %s", funcName);
+    }
     stackLog << "--------------------------------------" << std::endl << std::endl;
 
 }
