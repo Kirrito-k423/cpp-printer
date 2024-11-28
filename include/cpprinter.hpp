@@ -55,7 +55,7 @@ private:
 
 private:
     void initialize(const std::string& fullName);
-    void childProcessInit();
+    void CheckChildProcessInit();
     void printInfoOnce();
     void logCallStack(const char* funcName);
     void logStats();
