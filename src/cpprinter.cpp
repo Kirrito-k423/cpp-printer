@@ -44,10 +44,16 @@ void FunctionProfiler::initialize(const std::string& fullName) {
 }
 
 FunctionProfiler::FunctionProfiler(const char* funcName, const char* description = ""){
+    if (isCPPrinterOff()) {
+        return;
+    }
     initialize(std::string(funcName)+std::string(description));
 }
 
 FunctionProfiler::FunctionProfiler(const char* funcName){
+    if (isCPPrinterOff()) {
+        return;
+    }
     initialize(std::string(funcName));
 }
 
@@ -74,6 +80,9 @@ std::string FunctionProfiler::getThreadFileName(const std::string& funcName, con
 }
 
 void FunctionProfiler::record(const char* format, ...) {
+    if (isCPPrinterOff()) {
+        return;
+    }
     CheckChildProcessInit();
 
     // 计算需要的缓冲区大小
