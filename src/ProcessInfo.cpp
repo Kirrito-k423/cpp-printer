@@ -69,6 +69,9 @@ namespace cpprinter {
         }
 
         std::string ProcessInfo::pstreeInfo() {
+            // because linux save ppid in /proc/[pid]/status
+            // whatever `pgrep -P 1234` or `ps --ppid 2171213 -o pid,cmd`
+            // count childpid by search `cat /proc/[pid]/status` if the ppid is the input pid
             std::string commandWithoutThread = "pstree -a -T -t -n -p " + std::to_string(getpid());
             std::string command = "pstree -a -t -n -p " + std::to_string(getpid());
             return CLI::executeCommand(commandWithoutThread) + "\n" + CLI::executeCommand(command);
