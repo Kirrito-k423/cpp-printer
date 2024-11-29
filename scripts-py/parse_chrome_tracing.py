@@ -185,6 +185,7 @@ if __name__ == "__main__":
         paths = extract_paths_from_log(args.inputlogfile)
         ic(paths)
         for path in paths:
+            ic(path)
             trace_events.extend(parse_files(path))
     elif args.input_path:
         # 使用单个路径进行解析
