@@ -58,6 +58,9 @@ FunctionProfiler::FunctionProfiler(const char* funcName){
 }
 
 FunctionProfiler::~FunctionProfiler() {
+    if (isCPPrinterOff()) {
+        return;
+    }
     logStats();
     printInfoOnce();
 }
