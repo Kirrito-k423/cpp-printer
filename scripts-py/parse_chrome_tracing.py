@@ -122,6 +122,7 @@ def parse_files(base_dir):
     for root, dirs, files in os.walk(base_dir):
         tid = os.path.basename(root)
         for file in files:
+            ic(file)
             if file.endswith("_stat.txt"):
                 # 提取 tid 和 name
                 name = file.replace("_stat.txt", "")
