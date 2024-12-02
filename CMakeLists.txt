@@ -20,7 +20,8 @@ file(GLOB_RECURSE CPPRINTER_SOURCES "src/*.cpp")
 # 验证符号 nm -C /path/to/packages/torch_npu/lib/libcpprinter.a | grep getProcessInfo
 add_library(cpprinter ${CPPRINTER_SOURCES})
 
-target_link_libraries(cpprinter PRIVATE pthread)
+find_package(Threads REQUIRED)
+target_link_libraries(cpprinter PRIVATE Threads::Threads)
 target_link_libraries(cpprinter PRIVATE stdc++fs)
 
 # 包含头文件路径

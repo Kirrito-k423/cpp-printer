@@ -11,5 +11,8 @@ target_include_directories(test_printer PRIVATE
 # 链接 cpp_printer 库
 target_link_libraries(test_printer PRIVATE cpprinter)
 
+find_package(Threads REQUIRED)
+target_link_libraries(test_printer PRIVATE Threads::Threads)
+
 # 添加测试
 add_test(NAME cpp_printer_test COMMAND test_printer)

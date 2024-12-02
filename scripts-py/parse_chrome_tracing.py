@@ -70,7 +70,7 @@ def extract_record_trace_event(line, pid, tid, lookahead):
         # 继续读取多行的 info 内容
         if line == next_line:
             next_line = nextLine(lookahead)
-            
+
         while next_line and not re.match(r'.+SinceStart \d+, Call \d+: Duration \d+ microseconds.\(1e-6 s\), record:.?', next_line):
             info_lines.append(next_line)
             next_line = nextLine(lookahead)
@@ -138,10 +138,10 @@ def parse_files(base_dir):
                 with open(os.path.join(root, file), 'r') as f:
                     lines = f.readlines()  # 读取所有行
                     it = iter(lines)
-                    
+
                     # 使用 itertools.tee 来同时获取两个迭代器
                     lookahead, current = itertools.tee(it)
-                    
+
                     # 逐行处理
                     for current_line in current:
                         # 处理当前行和下一行
@@ -179,7 +179,7 @@ if __name__ == "__main__":
         ic.disable()
 
     trace_events = []
-    
+
     if args.inputlogfile:
         # 从日志文件中提取所有的 /tmp/cpp_{pid} 路径
         paths = extract_paths_from_log(args.inputlogfile)
@@ -196,6 +196,6 @@ if __name__ == "__main__":
 
     # 保存为 JSON 文件
     save_to_json(trace_events, args.output)
-    
+
     print(f"解析完成，tracing 数据已保存到 {args.output}")
 
