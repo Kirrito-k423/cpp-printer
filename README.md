@@ -6,17 +6,18 @@ A lightweight utility for monitoring **Multithread/Multiprocess** function behav
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**
 
-- [Quick Usage](#quick-usage)
-  - [Installation](#installation)
-  - [API Usage](#api-usage)
-    - [`PROFILE_FUNCTION()` & `PROFILE_RECORD("i is %d",i);`](#profile_function--profile_recordi-is-di)
-    - [System Information](#system-information)
-  - [env variable](#env-variable)
-  - [Fast Recompile](#fast-recompile)
-- [Features](#features)
-- [Limitations](#limitations)
-- [Motivation](#motivation)
-- [Known Issues / To Do](#known-issues--to-do)
+- [cpp-printer](#cpp-printer)
+  - [Quick Usage](#quick-usage)
+    - [Installation](#installation)
+    - [API Usage](#api-usage)
+      - [`PROFILE_FUNCTION()` \& `PROFILE_RECORD("i is %d",i);`](#profile_function--profile_recordi-is-di)
+      - [System Information](#system-information)
+    - [env variable](#env-variable)
+    - [Fast Recompile](#fast-recompile)
+  - [Features](#features)
+  - [Limitations](#limitations)
+  - [Motivation](#motivation)
+  - [Known Issues / To Do](#known-issues--to-do)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -40,6 +41,12 @@ FetchContent_MakeAvailable(cpp_printer) # match project name
 
 target_link_libraries(your_project PRIVATE cpprinter)
 ```
+
+> [!TIP]
+> You can fast find `add_library(torch_python.)` by `xxx.dir` when you compile failed like: `caffe2/torch/CMakeFiles/torch_python.dir/csrc/jit/passes/onnx.cpp.o`
+
+> [!WARNING]
+> If you use cpprinter in `install(TARGETS cpprinter EXPORT Caffe2Targets)` in `pytorch`, When you project `add_library(target_name PRIVATE pytorch)` in your project, and you add `target_link_libraries(target_name PRIVATE cpprinter)`. Because you already add cpprinter in `pytorch`, this will triger `add_library cannot create target "cpprinter" because an imported target with the same name already exists.` error.
 
 ### API Usage
 
