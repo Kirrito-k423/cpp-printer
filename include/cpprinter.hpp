@@ -26,6 +26,9 @@
 
 // ```cpp
 
+#ifndef CPPRINT_H
+#define CPPRINT_H
+
 #include <chrono>
 #include <string>
 #include <memory>
@@ -68,3 +71,5 @@ private:
 #define PROFILE_RECORD(...) profiler.record(__VA_ARGS__)
 
 }//namespace cpprinter
+
+#endif // CPPRINT_H
