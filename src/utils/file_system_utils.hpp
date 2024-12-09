@@ -9,7 +9,7 @@ void createDirectories(const std::string& path) {
     int result = system(command.c_str());
 
     if (result != 0) {
-        std::cerr << "Failed to create directory." << std::endl;
+        std::cerr << "Failed to create directory: " << path << std::endl;
     }
 }
 

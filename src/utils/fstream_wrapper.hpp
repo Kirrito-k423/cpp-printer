@@ -15,7 +15,7 @@ std::ofstream getOfStream(std::string filePath){
     std::ofstream fileLog(filePath, std::ios_base::app);
     if(!fileLog.is_open()) {
         std::cerr << "Error: Unable to open file!" << std::endl;
-    } 
+    }
     return fileLog;
 }
 

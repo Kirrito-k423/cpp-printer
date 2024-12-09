@@ -25,10 +25,17 @@ thread_local std::stack<std::string> FunctionProfiler::functionName_;
 thread_local std::stack<std::chrono::high_resolution_clock::time_point> FunctionProfiler::startTime_;
 thread_local std::shared_ptr<CallTrace> FunctionProfiler::calltrace_ = std::make_shared<CallTrace>();
 
+std::string Format2String(pid_t pid){
+    if (isCPPrinterDEBUG()){
+        std::cerr << "pid is " << pid << std::endl;
+    }
+    return std::to_string(pid);
+}
+
 void FunctionProfiler::CheckChildProcessInit(){
     // 检查 /tmp/{ppid()} 路径是否存在 并且 /tmp/{pid()} 不存在
-    std::string ppath = savePrefix + std::to_string(getppid());
-    std::string path = savePrefix + std::to_string(getpid());
+    std::string ppath = savePrefix + Format2String(getppid());
+    std::string path = savePrefix + Format2String(getpid());
     if (std::filesystem::exists(ppath) && !std::filesystem::exists(path)) {
         printed_ = false;
     }
