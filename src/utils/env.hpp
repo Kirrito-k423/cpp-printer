@@ -26,8 +26,14 @@ bool isCPPrinterOff() {
 
 
 bool isCPPrinterDEBUG() {
-    // 获取环境变量 CPPRINTER_OFF 的值
     const char* env_p = std::getenv("CPPRINTER_DEBUG");
+
+    // 如果环境变量存在且其值为 "1" 或 "true"，返回 true，否则返回 false
+    return (env_p && (std::string(env_p) == "1" || std::string(env_p) == "true"));
+}
+
+bool isCPPrinterCERR() {
+    const char* env_p = std::getenv("CPPRINTER_CERR");
 
     // 如果环境变量存在且其值为 "1" 或 "true"，返回 true，否则返回 false
     return (env_p && (std::string(env_p) == "1" || std::string(env_p) == "true"));

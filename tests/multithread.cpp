@@ -19,6 +19,7 @@ void testFunctionProfiler() {
     PROFILE_FUNCTION();
     key += 1;
     PROFILE_RECORD("key num is %d", key);
+    PROFILE_CERR("In testFunctionProfiler %d", key);
     // 模拟工作
     std::this_thread::sleep_for(std::chrono::milliseconds(400));
     testFunctionProfiler2();

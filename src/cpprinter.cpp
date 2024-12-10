@@ -95,6 +95,28 @@ std::string FunctionProfiler::getThreadFileName(const std::string& funcName, con
     return savePrefix + std::to_string(pid) + "/" + std::to_string(tid) + "/" + funcName + "_" + suffix;
 }
 
+void FunctionProfiler::cerr(const char* format, ...) {
+    if (!isCPPrinterCERR()) {
+        return;
+    }
+
+    // 计算需要的缓冲区大小
+    va_list args;
+    va_start(args, format);
+    int buffer_size = std::vsnprintf(nullptr, 0, format, args) + 1;  // +1 for null terminator
+    va_end(args);
+
+    // 动态分配缓冲区
+    std::unique_ptr<char[]> buffer(new char[buffer_size]);
+
+    va_start(args, format);
+    std::vsnprintf(buffer.get(), buffer_size, format, args);
+    va_end(args);
+
+    std::cerr << buffer.get() << std::endl;
+}
+
+
 void FunctionProfiler::record(const char* format, ...) {
     if (isCPPrinterOff()) {
         return;
