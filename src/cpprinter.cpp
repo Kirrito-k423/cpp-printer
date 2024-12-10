@@ -18,7 +18,7 @@
 
 namespace cpprinter{
 
-const std::string savePrefix="/tmp/cpp_";
+thread_local const std::string savePrefix="/tmp/cpp_";
 
 // for stacked
 thread_local std::stack<std::string> FunctionProfiler::functionName_;
@@ -35,6 +35,8 @@ std::string Format2String(pid_t pid){
 void FunctionProfiler::CheckChildProcessInit(){
     // 检查 /tmp/{ppid()} 路径是否存在 并且 /tmp/{pid()} 不存在
     if (isCPPrinterDEBUG()){
+        std::cerr << "stack functionName_ size is " << functionName_.size() << std::endl;
+        std::cerr << "stack startTime_ size is " << startTime_.size() << std::endl;
         std::cerr << "savePrefix is " << savePrefix << std::endl;
     }
     std::string ppid = Format2String(getppid());
