@@ -34,7 +34,11 @@ std::string Format2String(pid_t pid){
 
 void FunctionProfiler::CheckChildProcessInit(){
     // 检查 /tmp/{ppid()} 路径是否存在 并且 /tmp/{pid()} 不存在
-    std::string ppath = savePrefix + Format2String(getppid());
+    if (isCPPrinterDEBUG()){
+        std::cerr << "savePrefix is " << savePrefix << std::endl;
+    }
+    std::string ppid = Format2String(getppid());
+    std::string ppath = savePrefix + ppid;
     std::string path = savePrefix + Format2String(getpid());
     if (std::filesystem::exists(ppath) && !std::filesystem::exists(path)) {
         printed_ = false;
