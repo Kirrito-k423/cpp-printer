@@ -2,21 +2,24 @@
 
 A lightweight utility for monitoring **Multithread/Multiprocess** function behavior, including call stacks, timing, frequency, and call counts.
 
+![exmaple](./misc/example.png)
+
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**
 
-- [Quick Usage](#quick-usage)
-  - [Installation](#installation)
-  - [API Usage](#api-usage)
-    - [`PROFILE_FUNCTION()` & `PROFILE_RECORD("i is %d",i);`](#profile_function--profile_recordi-is-di)
-    - [System Information](#system-information)
-  - [env variable](#env-variable)
-  - [Fast Recompile](#fast-recompile)
-- [Features](#features)
-- [Limitations](#limitations)
-- [Motivation](#motivation)
-- [Known Issues / To Do](#known-issues--to-do)
+- [cpp-printer](#cpp-printer)
+  - [Quick Usage](#quick-usage)
+    - [Installation](#installation)
+    - [API Usage](#api-usage)
+      - [`PROFILE_FUNCTION()` \& `PROFILE_RECORD("i is %d",i);`](#profile_function--profile_recordi-is-di)
+      - [System Information](#system-information)
+    - [env variable](#env-variable)
+    - [Fast Recompile](#fast-recompile)
+  - [Features](#features)
+  - [Limitations](#limitations)
+  - [Motivation](#motivation)
+  - [Known Issues / To Do](#known-issues--to-do)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -141,6 +144,7 @@ When you add cppriner in a big CMake Project, and change the csrc of cpprinter, 
 ## Known Issues / To Do
 
 * [x] Compiling with `-g -O0` caused segmentation faults with `backward-cpp`. This issue has been resolved by replacing [backward-cpp](https://github.com/bombela/backward-cpp/tree/master) with [cpptrace](https://github.com/jeremy-rifkin/cpptrace).
-* [ ] When integrating the [v1 code](https://github.com/Kirrito-k423/cpp-printer/releases/tag/v1.0) into a [more complex project](https://gitee.com/shaojiemike/pytorch/tree/v2.1.0/) (involving more threads and deeper function call stacks), `cpptrace` occasionally caused segmentation faults. Instead of fixing `cpptrace`, I decided to develop a simple stack trace printing feature from scratch.
+* [x] When integrating the [v1 code](https://github.com/Kirrito-k423/cpp-printer/releases/tag/v1.0) into a [more complex project](https://gitee.com/shaojiemike/pytorch/tree/v2.1.0/) (involving more threads and deeper function call stacks), `cpptrace` occasionally caused segmentation faults. Instead of fixing `cpptrace`, I decided to develop a simple stack trace printing feature from scratch.
 
-
+> [!CAUTION]
+> `v1.2.17` may trigger random failures, such as segmentation faults, aborts, or excessive stack trace printing. This issue occurs when cpprinter is added in a destructor function or at the end of a subthread. I am currently working on a fix.
