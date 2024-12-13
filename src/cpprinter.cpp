@@ -16,9 +16,9 @@
 #include <fstream>
 #include <filesystem>
 
-namespace cpprinter{
+#define savePrefix "/tmp/cpp_"
 
-thread_local const std::string savePrefix="/tmp/cpp_";
+namespace cpprinter{
 
 // for stacked
 thread_local std::stack<std::string> FunctionProfiler::functionName_;
