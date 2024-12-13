@@ -122,11 +122,11 @@ When you add cppriner in a big CMake Project, and change the csrc of cpprinter, 
 
 ## Features
 
-* [x] Integrated with [icecream-cpp](https://github.com/renatoGarcia/icecream-cpp) and [cpptrace](https://github.com/jeremy-rifkin/cpptrace).
-  * Note: [icecream-cpp](https://github.com/renatoGarcia/icecream-cpp) is still under active development. You may need to update headers for new features or bug fixes.
+* [x] ~~Integrated with [icecream-cpp](https://github.com/renatoGarcia/icecream-cpp) and [cpptrace](https://github.com/jeremy-rifkin/cpptrace).~~
+  * ~~Note: [icecream-cpp](https://github.com/renatoGarcia/icecream-cpp) is still under active development. You may need to update headers for new features or bug fixes.~~
 * [x] Supports **multi-process/thread logging** to `/tmp/{pid}/{tid}/{fun_name}.log`.
 * [ ] Planned support for Google Test integration.
-* [ ] virtualization with `chrome://tracing`
+* [x] virtualization with `chrome://tracing`
 * [ ] virtualization with graphviz (not necessary due to callstack is not closely related)
 
 ## Limitations
@@ -143,8 +143,8 @@ When you add cppriner in a big CMake Project, and change the csrc of cpprinter, 
 
 ## Known Issues / To Do
 
-* [x] Compiling with `-g -O0` caused segmentation faults with `backward-cpp`. This issue has been resolved by replacing [backward-cpp](https://github.com/bombela/backward-cpp/tree/master) with [cpptrace](https://github.com/jeremy-rifkin/cpptrace).
-* [x] When integrating the [v1 code](https://github.com/Kirrito-k423/cpp-printer/releases/tag/v1.0) into a [more complex project](https://gitee.com/shaojiemike/pytorch/tree/v2.1.0/) (involving more threads and deeper function call stacks), `cpptrace` occasionally caused segmentation faults. Instead of fixing `cpptrace`, I decided to develop a simple stack trace printing feature from scratch.
+* [x] ~~Compiling with `-g -O0` caused segmentation faults with `backward-cpp`. This issue has been resolved by replacing [backward-cpp](https://github.com/bombela/backward-cpp/tree/master) with [cpptrace](https://github.com/jeremy-rifkin/cpptrace).~~
+* [x] ~~When integrating the [v1 code](https://github.com/Kirrito-k423/cpp-printer/releases/tag/v1.0) into a [more complex project](https://gitee.com/shaojiemike/pytorch/tree/v2.1.0/) (involving more threads and deeper function call stacks), `cpptrace` occasionally caused segmentation faults. Instead of fixing `cpptrace`, I decided to develop a simple stack trace printing feature from scratch.~~
 
 > [!CAUTION]
 > `v1.2.17` may trigger random failures, such as segmentation faults, aborts, or excessive stack trace printing. This issue occurs when cpprinter is added in a destructor function or at the end of a subthread. I am currently working on a fix.
