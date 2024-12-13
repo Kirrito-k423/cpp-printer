@@ -16,7 +16,7 @@ void testFunctionProfiler2() {
 }
 
 void testFunctionProfiler() {
-    PROFILE_FUNCTION();
+    // PROFILE_FUNCTION();
     key += 1;
     PROFILE_RECORD("key num is %d", key);
     PROFILE_CERR("In testFunctionProfiler %d", key);

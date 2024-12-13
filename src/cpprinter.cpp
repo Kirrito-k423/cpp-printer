@@ -117,11 +117,10 @@ void FunctionProfiler::cerr(const char* format, ...) {
 }
 
 
-void FunctionProfiler::record(const char* format, ...) {
+void FunctionProfiler::record(const char* funcName, const char* format, ...) {
     if (isCPPrinterOff()) {
         return;
     }
-    CheckChildProcessInit();
 
     // 计算需要的缓冲区大小
     va_list args;
@@ -137,7 +136,7 @@ void FunctionProfiler::record(const char* format, ...) {
     va_end(args);
 
     auto record_time = std::chrono::high_resolution_clock::now();
-    auto recordLog = getOfStream(getThreadFileName(functionName_.top(), "record.txt"));
+    auto recordLog = getOfStream(getThreadFileName(std::string(funcName), "record.txt"));
 
     // 写入格式化后的信息
     recordLog << "Time: " << getHumanReadableTime(record_time)
@@ -145,7 +144,7 @@ void FunctionProfiler::record(const char* format, ...) {
               << ", Call " << callCount_
               << ": Duration " << getDurationInMicroseconds(record_time)
               << " microseconds.(1e-6 s)"
-              << ", record: " << buffer.get() << std::endl;
+              << ", record: " << std::string(funcName) << " : " << buffer.get() << std::endl;
 }
 
 
